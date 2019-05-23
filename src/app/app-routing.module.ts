@@ -2,7 +2,9 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
-  { path: '', loadChildren: './tabs/tabs.module#TabsPageModule' }
+  { path: '', redirectTo: 'books', pathMatch: 'full' },
+  { path: 'books', loadChildren: './books/books.module#BooksPageModule' },
+  { path: 'books/:id', loadChildren: './books-details/books-details.module#BooksDetailsPageModule' }
 ];
 @NgModule({
   imports: [
