@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { BooksService } from '../api/books.service';
 
 @Component({
   selector: 'app-books',
@@ -7,9 +9,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BooksPage implements OnInit {
 
-  constructor() { }
+  results: Observable<any>;
+  searchTerm: string = '';
+
+  constructor(private bookService: BooksService) { }
 
   ngOnInit() {
+  }
+
+  searchChanged() {
+    // Call our service function which returns an Observable
+    this.results = this.bookService.searchData(this.searchTerm);
   }
 
 }
