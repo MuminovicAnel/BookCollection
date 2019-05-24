@@ -12,14 +12,15 @@ export class BooksPage implements OnInit {
   results: Observable<any>;
   searchTerm: string = '';
 
-  constructor(private bookService: BooksService) { }
+  constructor(private booksService: BooksService) { }
 
   ngOnInit() {
   }
 
   searchChanged() {
+    
     // Call our service function which returns an Observable
-    this.results = this.bookService.searchData(this.searchTerm);
+    this.results = this.booksService.searchData(this.searchTerm);
   }
 
 }

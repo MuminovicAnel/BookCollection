@@ -7,5 +7,24 @@
 </ion-header>
 
 <ion-content>
+
+    <ion-searchbar [(ngModel)]="searchTerm" (ionChange)="searchChanged($event)"></ion-searchbar>
+
+    <ion-list>
+ 
+        <ion-item button *ngFor="let item of (results | async)" [routerLink]="['/', 'books', item.id]">
+          <ion-avatar slot="start">
+            <img [src]="item['volumeInfo']['imageLinks'].thumbnail" *ngIf="item['volumeInfo'].thumbnail != 'N/A'">
+          </ion-avatar>
+     
+          <ion-label text-wrap>
+            <h3>{{ item['volumeInfo'].title}}</h3>
+            <p>{{ item['volumeInfo'].authors }}</p>
+          </ion-label>
+    
+     
+        </ion-item>
+     
+      </ion-list>
     
 </ion-content>
