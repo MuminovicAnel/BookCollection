@@ -1,5 +1,11 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button (click)='backButton'
+          [text]="Back"
+          [icon]="star">
+      </ion-back-button>
+    </ion-buttons>
     <ion-title>books-details</ion-title>
   </ion-toolbar>
 </ion-header>
