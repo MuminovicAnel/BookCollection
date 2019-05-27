@@ -3,6 +3,14 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
+export enum SearchType {
+  all = '',
+  title = 'intitle:',
+  author = 'inauthor:',
+  publisher = 'inpublisher:'
+}
+ 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -44,13 +52,23 @@ export class BooksService {
   * map the result to return only the results that we need
   * 
   * @param {string} title Search Term
-  * @param {SearchType} type movie, series, episode or empty
+  * @param {SearchType} type author, title, publisher or empty
   * @returns Observable with the search results
   */
-  searchData(title: string): Observable<any> {
-    return this.http.get(`${this.url}?q=${encodeURI(title)}&langRestrict=${this.lang}&key=${this.apiKey}`, this.httpOptions).pipe(
+  searchData(title: string, type: SearchType): Observable<any> {
+    return this.http.get(`${this.url}?q=${type}${encodeURI(title)}&langRestrict=${this.lang}&maxResults=40&printType=all&key=${this.apiKey}`, this.httpOptions).pipe(
       map(results => results['items']),
       catchError(this.handleError)
     );
   }
+
+  /**
+  * Get the detailed information for an ID using the "i" parameter
+  * 
+  * @param {string} id ID to retrieve information
+  * @returns Observable with detailed information
+  */
+ getDetails(id) {
+  return this.http.get(`${this.url}/${id}?key=${this.apiKey}`, this.httpOptions)
+ }
 }

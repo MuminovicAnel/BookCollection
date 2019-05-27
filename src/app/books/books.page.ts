@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { BooksService } from '../api/books.service';
+import { BooksService, SearchType } from '../api/books.service';
 
 @Component({
   selector: 'app-books',
@@ -11,16 +11,16 @@ export class BooksPage implements OnInit {
 
   results: Observable<any>;
   searchTerm: string = '';
+  type: SearchType = SearchType.all;
 
   constructor(private booksService: BooksService) { }
 
   ngOnInit() {
   }
 
-  searchChanged() {
-    
+  searchChanged() {    
     // Call our service function which returns an Observable
-    this.results = this.booksService.searchData(this.searchTerm);
+    this.results = this.booksService.searchData(this.searchTerm, this.type);
   }
 
 }
