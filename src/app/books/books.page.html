@@ -8,7 +8,7 @@
 
 <ion-content>
 
-    <ion-searchbar [(ngModel)]="searchTerm" (ionChange)="searchChanged($event)"></ion-searchbar>
+    <ion-searchbar #mainSearchbar debounce="400" [(ngModel)]="searchTerm" (ionChange)="searchChanged($event)" (ionChange)="presentLoadingWithOptions($event)" (ionBlur)="setFocus()"></ion-searchbar>
 
     <ion-item>
       <ion-label>Select Searchtype</ion-label>
@@ -26,7 +26,7 @@
             <img [src]="item['volumeInfo']['imageLinks'].smallThumbnail" *ngIf="item['volumeInfo']['imageLinks']">
           </ion-avatar>     
           <ion-label text-wrap>
-            <ion-title>{{ item['volumeInfo'].title}}</ion-title>
+            <h3>{{ item['volumeInfo'].title}}</h3>
             <p>{{ item['volumeInfo'].authors }}</p>
           </ion-label>         
         </ion-item>     
