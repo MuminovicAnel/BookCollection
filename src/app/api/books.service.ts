@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { Items } from '../model/book.interfaces'
+import { Book } from '../model/book.interfaces'
 
 export enum SearchType {
   all = '',
@@ -17,16 +17,14 @@ export enum SearchType {
 })
 export class BooksService {
 
-  //public items: Items[];
-
   httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
   };
 
-  url = 'https://www.googleapis.com/books/v1/volumes';
-  apiKey = 'AIzaSyCkz-UoN3TDdo5DC33LnlpqAzpsFHU_FBI'; // <-- Enter your own key here!
-  lang = 'fr';
-  items 
+  private url = 'https://www.googleapis.com/books/v1/volumes';
+  private apiKey = 'AIzaSyCkz-UoN3TDdo5DC33LnlpqAzpsFHU_FBI'; // <-- Enter your own key here!
+  private lang = 'fr';
+  private items: Book;
 
   /**
    * Constructor of the Service with Dependency Injection
@@ -59,9 +57,11 @@ export class BooksService {
   * @param {SearchType} type author, title, publisher or empty
   * @returns Observable with the search results
   */
-  searchData(title: string, type: SearchType): Observable<Items> {
-    return this.http.get<Items>(`${this.url}?q=${type}${encodeURI(title)}&langRestrict=${this.lang}&maxResults=40&printType=all&key=${this.apiKey}`, this.httpOptions).pipe(
-      map(result => this.items = result['items']),
+  searchData(title: string, type: SearchType) : Observable<Book> {
+    return this.http.get<Book>(`${this.url}?q=${type}${encodeURI(title)}&langRestrict=${this.lang}&maxResults=40&printType=all&key=${this.apiKey}`, this.httpOptions).pipe(
+      map(
+        response => this.items = response.items
+      ),
       catchError(this.handleError)
     );
   }

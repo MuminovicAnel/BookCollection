@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { BooksService, SearchType } from '../api/books.service';
 import { LoadingController, IonSearchbar } from '@ionic/angular';
 import { ViewChild } from '@angular/core';
+import { Book } from '../model/book.interfaces';
 
 
 @Component({
@@ -13,9 +14,9 @@ import { ViewChild } from '@angular/core';
 export class BooksPage implements OnInit {
   @ViewChild('mainSearchbar') searchBar: IonSearchbar;
 
-  results: Observable<any>;
-  searchTerm: string = '';
-  type: SearchType = SearchType.all;
+  private results: Observable<Book>;
+  private searchTerm: string = '';
+  private type: SearchType = SearchType.all;
 
   constructor(private booksService: BooksService, private loadingController: LoadingController) { }
 
