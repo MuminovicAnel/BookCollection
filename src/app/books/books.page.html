@@ -9,10 +9,9 @@
 <ion-content>
 
     <ion-searchbar #mainSearchbar debounce="400" [(ngModel)]="searchTerm" (ionChange)="searchChanged($event)" (ionChange)="presentLoadingWithOptions($event)" (ionBlur)="setFocus()"></ion-searchbar>
-
     <ion-item>
       <ion-label>Select Searchtype</ion-label>
-      <ion-select [(ngModel)]="type" (ionChange)="searchChanged($event)">
+      <ion-select [(ngModel)]="type">
         <ion-select-option value="">All</ion-select-option>
         <ion-select-option value="intitle:">Title</ion-select-option>
         <ion-select-option value="inauthor:">Author</ion-select-option>
@@ -24,7 +23,7 @@
         <ion-item button *ngFor="let item of (results | async)" [routerLink]="['/', 'books', item.id]">
           <ion-avatar slot="start">
             <img [src]="item['volumeInfo']['imageLinks'].smallThumbnail" *ngIf="item['volumeInfo']['imageLinks']">
-          </ion-avatar>     
+          </ion-avatar>
           <ion-label text-wrap>
             <h3>{{ item['volumeInfo'].title}}</h3>
             <p>{{ item['volumeInfo'].authors }}</p>

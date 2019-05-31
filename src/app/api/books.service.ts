@@ -58,9 +58,9 @@ export class BooksService {
   * @returns Observable with the search results
   */
   searchData(title: string, type: SearchType) : Observable<Book> {
-    return this.http.get<Book>(`${this.url}?q=${type}${encodeURI(title)}&langRestrict=${this.lang}&maxResults=40&printType=all&key=${this.apiKey}`, this.httpOptions).pipe(
+    return this.http.get(`${this.url}?q=${type}${encodeURI(title)}&langRestrict=${this.lang}&maxResults=40&printType=all&key=${this.apiKey}`, this.httpOptions).pipe(
       map(
-        response => this.items = response.items
+        response => this.items = response['items']
       ),
       catchError(this.handleError)
     );

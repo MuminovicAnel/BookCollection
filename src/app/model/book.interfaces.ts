@@ -1,5 +1,4 @@
 export interface Book {
-  json: any;
     items: Array<Items>;
 }
 export interface Items{
