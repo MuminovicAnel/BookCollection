@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { BooksService, SearchType } from '../api/books.service';
 import { LoadingController, IonSearchbar } from '@ionic/angular';
 import { ViewChild } from '@angular/core';
+import { Book } from '../model/book.interfaces';
 
 
 @Component({
@@ -13,16 +14,16 @@ import { ViewChild } from '@angular/core';
 export class BooksPage implements OnInit {
   @ViewChild('mainSearchbar') searchBar: IonSearchbar;
 
-  results: Observable<any>;
-  searchTerm: string = '';
-  type: SearchType = SearchType.all;
+  private results: Observable<Book>;
+  private searchTerm: string = '';
+  private type: SearchType = SearchType.all;
 
   constructor(private booksService: BooksService, private loadingController: LoadingController) { }
 
   ngOnInit() {
   }
 
-  searchChanged() {    
+  searchChanged() {
     // Call our service function which returns an Observable
     this.results = this.booksService.searchData(this.searchTerm, this.type);
   }
@@ -35,11 +36,13 @@ export class BooksPage implements OnInit {
       translucent: true,
       cssClass: 'custom-class custom-loading'
     });
-    return await loading.present();
-  }
 
-  setFocus(){
-    this.searchBar.setFocus();
+    loading.onDidDismiss().then(() => {
+      this.searchBar.setFocus();
+    });
+
+    return await loading.present();
+
   }
 
 }

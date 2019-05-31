@@ -6,47 +6,100 @@
           [icon]="star">
       </ion-back-button>
     </ion-buttons>
-    <ion-title>books-details</ion-title>
+    <ion-title>books details</ion-title>
   </ion-toolbar>
 </ion-header>
+
 <ion-content padding>
   <ion-card *ngIf="book">
     <ion-card-header>
       <ion-card-title>
-        {{ book['volumeInfo'].title }}
+        {{ book.volumeInfo.title }}
       </ion-card-title>
-      <ion-card-subtitle>
-        {{ book['volumeInfo'].authors }}
+      <ion-card-subtitle *ngIf="book.volumeInfo.authors; else author">
+        {{ book.volumeInfo.authors }}
+        <ng-template #author>
+            No author information
+          </ng-template>
       </ion-card-subtitle>
       <ion-card-subtitle>
-          {{book['volumeInfo'].publishedDate}}
+          {{book.volumeInfo.publishedDate}}
         </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content text-center>
-      <img [src]="book['volumeInfo']['imageLinks'].smallThumbnail" class="info-img">
 
-      
-
-      <ion-label text-wrap>{{ book['volumeInfo'].description }}</ion-label>
+      <img [src]="book.volumeInfo.imageLinks.smallThumbnail" *ngIf="book.volumeInfo.imageLinks; else image" class="info-img">
+      <ng-template #image>
+          <img src="../../assets/default/image.png">
+      </ng-template>
+      <hr>
+      <ion-label text-wrap *ngIf="book.volumeInfo.description; else description">{{ book.volumeInfo.description }}</ion-label>
+      <ng-template #description>
+          <ion-label text-wrap>No description</ion-label>
+      </ng-template>
+      <hr>
 
       <ion-item lines="none">
-        <ion-icon name="star-half" slot="start" *ngIf="book['volumeInfo']['categories']"></ion-icon>
-        <ion-label text-wrap>{{ book['volumeInfo']['categories'] }}</ion-label>
+        <ion-icon ios="ios-book" md="md-book" slot="start" *ngIf="book.volumeInfo.categories; else category"></ion-icon>
+        <ion-label text-wrap>{{ book.volumeInfo.categories }}</ion-label>
       </ion-item>
+
+      <ng-template #category>
+        <ion-icon ios="ios-book" md="md-book" slot="start"></ion-icon>
+        <ion-label text-wrap>No category</ion-label>
+      </ng-template>
 
       <ion-item lines="none">
         <ion-icon name="clipboard" slot="start"></ion-icon>
-        <ion-label text-wrap>{{book['volumeInfo'].publisher}}</ion-label>
+        <ion-label text-wrap *ngIf="book.volumeInfo.publisher; else publisher">{{book.volumeInfo.publisher}}</ion-label>
+        <ng-template #publisher>
+            <ion-label text-wrap>No publisher</ion-label>
+          </ng-template>
       </ion-item>
 
       <ion-item lines="none">
-        <ion-icon name="contacts" slot="start"></ion-icon>
-        <ion-label text-wrap>{{ book }}</ion-label>
+        <ion-icon ios="ios-pricetag" md="md-pricetag" slot="start"></ion-icon>        
+          <div [ngSwitch]="book.saleInfo.saleability">
+            <ion-label text-wrap *ngSwitchCase="'FREE'">
+              FREE
+            </ion-label>
+          <ion-label text-wrap *ngSwitchCase="'FOR_SALE'">
+            {{ book.saleInfo.retailPrice.amount }} {{book.saleInfo.retailPrice.currencyCode}}
+          </ion-label>
+          <ion-label text-wrap *ngSwitchDefault>
+            No price information
+          </ion-label>
+          </div>
+          <ion-button slot="end" (click)="openWebsite(book.saleInfo.buyLink)" *ngIf="book.saleInfo.buyLink">
+              <ion-icon name="open" slot="start"></ion-icon>
+              Buy
+          </ion-button>
       </ion-item>
 
-      <ion-button expand="full" (click)="openWebsite()" *ngIf="this.book['volumeInfo'].previewLink">
-        <ion-icon name="open" slot="start"></ion-icon>
-        Infos
+      <hr>
+
+      <h1>Format download</h1>
+
+      <hr>
+
+      <ion-button *ngIf="book.accessInfo.epub.isAvailable" (click)="openWebsite(book.accessInfo.epub.acsTokenLink)">
+        <ion-icon slot="start" ios="ios-code-download" md="md-code-download"></ion-icon>
+        <ion-label>Epub</ion-label>
+      </ion-button>
+      <ion-button *ngIf="book.accessInfo.pdf.isAvailable" (click)="openWebsite(book.accessInfo.pdf.acsTokenLink)">
+          <ion-icon slot="start" ios="ios-code-download" md="md-code-download"></ion-icon>
+          <ion-label>PDF</ion-label>
+      </ion-button>
+
+      <hr>
+
+      <h1>Info book</h1>
+
+      <hr>
+
+      <ion-button expand="block" (click)="openWebsite(book.volumeInfo.previewLink)" *ngIf="book.volumeInfo.previewLink">
+          <ion-icon name="open" slot="start" size="large"></ion-icon>
+          Preview
       </ion-button>
     </ion-card-content>
   </ion-card>

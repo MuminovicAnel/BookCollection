@@ -1,8 +1,11 @@
+export interface Book {
+    items: Array<Items>;
+}
 export interface Items{
     id: string;
-    volumeInfo: VolumeInfo;
-    saleInfo: SaleInfo;
-    accessInfo: AccessInfo;
+    volumeInfo: Array<VolumeInfo>;
+    saleInfo: Array<SaleInfo>;
+    accessInfo: Array<AccessInfo>;
 }
 interface VolumeInfo {
     title: string;
