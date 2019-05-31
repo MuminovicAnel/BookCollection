@@ -10,13 +10,13 @@ import { ActivatedRoute } from "@angular/router";
 })
 export class BooksDetailsPage implements OnInit {
 
-  book = null;
+  private book = null;
 
   constructor(private location: Location, private activatedRoute: ActivatedRoute, private booksService: BooksService) { }
 
   ngOnInit() {
     // Get the ID that was passed with the URL
-    let id = this.activatedRoute.snapshot.paramMap.get('id');
+    const id = this.activatedRoute.snapshot.paramMap.get('id');
 
     // Get the information from the API
     this.booksService.getDetails(id).subscribe(result => {
@@ -28,8 +28,8 @@ export class BooksDetailsPage implements OnInit {
     this.location.back();
   }
 
-  openWebsite() {
-    window.open(this.book['volumeInfo'].previewLink, '_system');
+  openWebsite(url) {
+    window.open(url, '_system');
   }
 
 }

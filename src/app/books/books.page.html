@@ -8,7 +8,7 @@
 
 <ion-content>
 
-    <ion-searchbar #mainSearchbar debounce="400" [(ngModel)]="searchTerm" (ionChange)="searchChanged($event)" (ionChange)="presentLoadingWithOptions($event)" (ionBlur)="setFocus()"></ion-searchbar>
+    <ion-searchbar #mainSearchbar debounce="400" [(ngModel)]="searchTerm" (ionChange)="searchChanged($event)" (ionChange)="presentLoadingWithOptions($event)"></ion-searchbar>
     <ion-item>
       <ion-label>Select Searchtype</ion-label>
       <ion-select [(ngModel)]="type">
@@ -19,16 +19,25 @@
       </ion-select>
     </ion-item>
 
-    <ion-list> 
-        <ion-item button *ngFor="let item of (results | async)" [routerLink]="['/', 'books', item.id]">
-          <ion-avatar slot="start">
-            <img [src]="item.volumeInfo.imageLinks.smallThumbnail" *ngIf="item.volumeInfo.imageLinks">
-          </ion-avatar>
-          <ion-label text-wrap>
-            <h3>{{ item.volumeInfo.title}}</h3>
-            <p>{{ item.volumeInfo.authors }}</p>
-          </ion-label>         
-        </ion-item>     
-      </ion-list>
+    <ion-list>
+      <ion-item button *ngFor="let item of (results | async)" [routerLink]="['/', 'books', item.id]">
+        <ion-avatar slot="start">
+          <img [src]="item.volumeInfo.imageLinks.smallThumbnail" *ngIf="item.volumeInfo.imageLinks; else image">
+          <ng-template #image>
+              <img src="../../assets/default/image.png">
+          </ng-template>
+        </ion-avatar>
+        
+        <ion-label text-wrap>
+          <h3>{{ item.volumeInfo.title}}</h3>
+          <p *ngIf="item.volumeInfo.authors; else author">{{ item.volumeInfo.authors }}</p>
+          <ng-template #author>
+            <p>No author information</p>
+          </ng-template>
+          
+          <p *ngIf="item.volumeInfo.publisher">{{ item.volumeInfo.publisher }}</p>            
+        </ion-label>         
+      </ion-item>  
+    </ion-list>
     
 </ion-content>

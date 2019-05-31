@@ -23,7 +23,7 @@ export class BooksPage implements OnInit {
   ngOnInit() {
   }
 
-  searchChanged() {    
+  searchChanged() {
     // Call our service function which returns an Observable
     this.results = this.booksService.searchData(this.searchTerm, this.type);
   }
@@ -36,11 +36,13 @@ export class BooksPage implements OnInit {
       translucent: true,
       cssClass: 'custom-class custom-loading'
     });
-    return await loading.present();
-  }
 
-  setFocus(){
-    this.searchBar.setFocus();
+    loading.onDidDismiss().then(() => {
+      this.searchBar.setFocus();
+    });
+
+    return await loading.present();
+
   }
 
 }
