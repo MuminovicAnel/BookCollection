@@ -24,7 +24,7 @@ export class BooksService {
   private url = 'https://www.googleapis.com/books/v1/volumes';
   private apiKey = 'AIzaSyCkz-UoN3TDdo5DC33LnlpqAzpsFHU_FBI'; // <-- Enter your own key here!
   private lang = 'fr';
-  private items: Book;
+  private items: Array<Book> = [];
 
   /**
    * Constructor of the Service with Dependency Injection
