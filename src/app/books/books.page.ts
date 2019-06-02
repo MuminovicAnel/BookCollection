@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { BooksService, SearchType } from '../api/books.service';
 import { LoadingController, IonSearchbar } from '@ionic/angular';
 import { ViewChild } from '@angular/core';
 import { Book } from '../model/book.interfaces';
+import { Storage } from '@ionic/storage';
 
 
 @Component({
@@ -13,15 +14,18 @@ import { Book } from '../model/book.interfaces';
 })
 export class BooksPage implements OnInit {
   @ViewChild('mainSearchbar') searchBar: IonSearchbar;
-
+  
+  public myData = new BehaviorSubject([]);
   private results: Observable<Book>;
   private searchTerm: string = '';
   private type: SearchType = SearchType.all;
 
-  constructor(private booksService: BooksService, private loadingController: LoadingController) { }
+  constructor(private booksService: BooksService, private loadingController: LoadingController, private storage: Storage) { }
 
   ngOnInit() {
+
   }
+
 
   searchChanged() {
     // Call our service function which returns an Observable

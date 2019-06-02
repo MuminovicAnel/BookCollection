@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
-import { Book } from '../model/book.interfaces'
+import { map, catchError} from 'rxjs/operators';
+import { Book } from '../model/book.interfaces';
+import { Storage } from '@ionic/storage';
 
 export enum SearchType {
   all = '',
@@ -30,7 +31,7 @@ export class BooksService {
    * Constructor of the Service with Dependency Injection
    * @param http The standard Angular HttpClient to make requests
    */
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private storage: Storage) { }
 
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
@@ -58,9 +59,12 @@ export class BooksService {
   * @returns Observable with the search results
   */
   searchData(title: string, type: SearchType) : Observable<Book> {
-    return this.http.get(`${this.url}?q=${type}${encodeURI(title)}&langRestrict=${this.lang}&maxResults=40&printType=all&key=${this.apiKey}`, this.httpOptions).pipe(
+    let url = `${this.url}?q=${type}${encodeURI(title)}&langRestrict=${this.lang}&maxResults=40&printType=all&key=${this.apiKey}`;
+    return this.http.get(url, this.httpOptions)
+    .pipe(
       map(
-        response => this.items = response['items']
+        response => response['items'],
+        this.storage.set('books', Response)
       ),
       catchError(this.handleError)
     );
@@ -72,7 +76,7 @@ export class BooksService {
   * @param {string} id ID to retrieve information
   * @returns Observable with detailed information
   */
- getDetails(id) {
-  return this.http.get(`${this.url}/${id}?key=${this.apiKey}`, this.httpOptions)
- }
+  getDetails(id) {
+    return this.http.get(`${this.url}/${id}?key=${this.apiKey}`, this.httpOptions)
+  }
 }
