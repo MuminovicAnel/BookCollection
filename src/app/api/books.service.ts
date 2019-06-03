@@ -51,7 +51,7 @@ export class BooksService {
 
 
   /**
-  * Get data from the OmdbApi 
+  * Get data from the Google Books API
   * map the result to return only the results that we need
   * 
   * @param {string} title Search Term
@@ -63,8 +63,7 @@ export class BooksService {
     return this.http.get(url, this.httpOptions)
     .pipe(
       map(
-        response => response['items'],
-        this.storage.set('books', Response)
+        response => response['items']
       ),
       catchError(this.handleError)
     );
