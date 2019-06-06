@@ -30,7 +30,13 @@ export class BooksDetailsPage implements OnInit {
     });
   }
 
-  async toastFavorite() {
+  // Function that store an item
+  async favoriteBook() {
+    this.booksService.getDetails(this.id).subscribe((book: Book[])=> {
+      this.booksService.favoriteBook(book).then(() => {
+        this.isFavorite = true;
+      });
+    });
     const toast = await this.toastController.create({
       translucent: true,
       buttons: [
@@ -54,30 +60,18 @@ export class BooksDetailsPage implements OnInit {
     toast.present();
   }
 
-  async toastUnfavorite() {
-    const toast = await this.toastController.create({
-      message: 'Successfully unfavorited',
-      duration: 2000
-    });
-    toast.present();
-  }
-
-  // Function that store an item
-  favoriteBook() {
-    this.booksService.getDetails(this.id).subscribe((book: Book[])=> {
-      this.booksService.favoriteBook(book).then(() => {
-        this.isFavorite = true;
-      });
-    });
-  }
-
   // Function that unset an item from the storage
-  unFavoriteBook() {
+  async unFavoriteBook() {
     this.booksService.getDetails(this.id).subscribe((book: Book[])=> {
       this.booksService.unfavoriteBook(book).then(() => {
         this.isFavorite = false;
       });
     });
+    const toast = await this.toastController.create({
+      message: 'Successfully unfavorited',
+      duration: 2000
+    });
+    toast.present();
   }
 
 

@@ -1,6 +1,7 @@
 import { BooksService } from './../api/books.service';
 import { Component, OnInit } from '@angular/core';
 import { Book } from '../model/book.interfaces';
+import { $ } from 'protractor';
 
 @Component({
   selector: 'app-books-favorite',
@@ -19,16 +20,15 @@ export class BooksFavoritePage implements OnInit {
       this.results = value;  
   });
   }
-
-  doRefresh(event) {
-    console.log('Begin async operation');
-
-    setTimeout(() => {
-      console.log('Async operation has ended');
-      event.target.complete();
-    }, 2000);
-  }
+  // Refresh the list if no value loaded
+  doRefresh(refresher?) {
+    this.booksService.getAllFavoriteBooks().then((value) => {
+      this.results = value;  
+      if (refresher) {
+          refresher.target.complete();
+      }
+  });
 
 }
   
-
+}

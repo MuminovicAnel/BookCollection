@@ -8,10 +8,10 @@
     </ion-buttons>
     <ion-title>books details</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="unFavoriteBook()" *ngIf="isFavorite" (click)="toastUnfavorite($event)">
+      <ion-button (click)="unFavoriteBook()" *ngIf="isFavorite">
         <ion-icon slot="icon-only" name="star"></ion-icon>
       </ion-button>
-      <ion-button icon-only (click)="favoriteBook()" *ngIf="!isFavorite" (click)="toastFavorite($event)">
+      <ion-button icon-only (click)="favoriteBook()" *ngIf="!isFavorite">
         <ion-icon slot="icon-only" name="star-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
