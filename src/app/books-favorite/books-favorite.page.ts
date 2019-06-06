@@ -16,8 +16,17 @@ export class BooksFavoritePage implements OnInit {
   ngOnInit() {
     // Return the result to view
     this.booksService.getAllFavoriteBooks().then((value) => {
-      this.results = value  
+      this.results = value;  
   });
+  }
+
+  doRefresh(event) {
+    console.log('Begin async operation');
+
+    setTimeout(() => {
+      console.log('Async operation has ended');
+      event.target.complete();
+    }, 2000);
   }
 
 }
