@@ -87,8 +87,10 @@ export class BooksService {
   */
   isFavorite(bookId) {
     return this.getAllFavoriteBooks().then(result => {
-      return result && result.indexOf(bookId) !== -1;
-    });
+      return result.some(response => 
+        response.id === bookId
+      );
+    });     
   }
   
   /**

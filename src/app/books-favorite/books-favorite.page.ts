@@ -14,6 +14,7 @@ export class BooksFavoritePage implements OnInit {
   constructor(private booksService: BooksService) { }
 
   ngOnInit() {
+    // Return the result to view
     this.booksService.getAllFavoriteBooks().then((value) => {
       this.results = value  
   });

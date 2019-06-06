@@ -21,11 +21,15 @@ export class BooksDetailsPage implements OnInit {
     // Get the ID that was passed with the URL
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
 
-    this.booksService.isFavorite(this.id).then(isFav => {
-      this.isFavorite = isFav;
-    })
+    // Check if id exist in storage
+    this.booksService.getDetails(this.id).subscribe((book: Book[])=> {
+      this.booksService.isFavorite(book['id']).then(isFav => {
+        this.isFavorite = isFav;
+      });
+    });
   }
 
+  // Function that store an item
   favoriteBook() {
     this.booksService.getDetails(this.id).subscribe((book: Book[])=> {
       this.booksService.favoriteBook(book).then(() => {
@@ -34,6 +38,7 @@ export class BooksDetailsPage implements OnInit {
     });
   }
 
+  // Function that unset an item from the storage
   unFavoriteBook() {
     this.booksService.getDetails(this.id).subscribe((book: Book[])=> {
       this.booksService.unfavoriteBook(book).then(() => {
