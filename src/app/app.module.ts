@@ -12,6 +12,7 @@ import { AppComponent } from './app.component';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpClientModule } from '@angular/common/http';
 import {CacheModule } from 'ionic-cache';
+import { Network } from '@ionic-native/network/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -21,6 +22,7 @@ import {CacheModule } from 'ionic-cache';
     StatusBar,
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    Network
   ],
   bootstrap: [AppComponent]
 })
