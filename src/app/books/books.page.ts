@@ -16,7 +16,7 @@ export class BooksPage implements OnInit {
   @ViewChild('mainSearchbar') searchBar: IonSearchbar;
   
   public myData = new BehaviorSubject([]);
-  private results: Observable<Book>;
+  private results$: Observable<Book[]>;
   private searchTerm: string = '';
   private type: SearchType = SearchType.all;
 
@@ -29,9 +29,10 @@ export class BooksPage implements OnInit {
 
   searchChanged() {
     // Call our service function which returns an Observable
-    this.results = this.booksService.searchData(this.searchTerm, this.type);
+    this.results$ = this.booksService.searchData(this.searchTerm, this.type);
   }
 
+  // Loading component
   async presentLoadingWithOptions() {
     const loading = await this.loadingController.create({
       spinner: null,

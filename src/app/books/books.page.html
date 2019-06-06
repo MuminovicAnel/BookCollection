@@ -8,7 +8,7 @@
 
 <ion-content>
 
-    <ion-searchbar #mainSearchbar debounce="400" [(ngModel)]="searchTerm" (ionChange)="searchChanged($event)" (ionChange)="presentLoadingWithOptions($event)"></ion-searchbar>
+    <ion-searchbar #mainSearchbar debounce="400" [(ngModel)]="searchTerm" (search)="searchChanged($event)" (search)="presentLoadingWithOptions($event)"></ion-searchbar>
     <ion-item>
       <ion-label>Select Searchtype</ion-label>
       <ion-select [(ngModel)]="type">
@@ -20,7 +20,7 @@
     </ion-item>
 
     <ion-list>
-      <ion-item button *ngFor="let item of (results | async)" [routerLink]="['/', 'books', item.id]">
+      <ion-item button *ngFor="let item of (results$ | async)?.items" [routerLink]="['/', 'books', item.id]">
         <ion-avatar slot="start">
           <img [src]="item.volumeInfo.imageLinks.smallThumbnail" *ngIf="item.volumeInfo.imageLinks; else image">
           <ng-template #image>

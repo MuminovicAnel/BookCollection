@@ -6,7 +6,15 @@
           [icon]="star">
       </ion-back-button>
     </ion-buttons>
-    <ion-title *ngIf="book.id">books details id : {{book.id}}</ion-title>
+    <ion-title>books details</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="unFavoriteBook()" *ngIf="isFavorite">
+        <ion-icon slot="icon-only" name="star"></ion-icon>
+      </ion-button>
+      <ion-button icon-only (click)="favoriteBook()" *ngIf="!isFavorite">
+        <ion-icon slot="icon-only" name="star-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -70,7 +78,7 @@
             No price information
           </ion-label>
           </div>
-          <ion-button expand="block" slot="end" (click)="openWebsite(book.saleInfo.buyLink)" *ngIf="book.saleInfo.buyLink">
+          <ion-button expand="full" slot="end" (click)="openWebsite(book.saleInfo.buyLink)" *ngIf="book.saleInfo.buyLink">
               <ion-icon name="open" slot="start"></ion-icon>
               Buy
           </ion-button>
