@@ -36,7 +36,7 @@ export class BooksPage implements OnInit {
   async presentLoadingWithOptions() {
     const loading = await this.loadingController.create({
       spinner: null,
-      duration: 400,
+      duration: 100,
       message: 'Please wait...',
       translucent: true,
       cssClass: 'custom-class custom-loading'
