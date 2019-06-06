@@ -1,8 +1,9 @@
 import { BooksService } from './../api/books.service';
 import { Component, OnInit } from '@angular/core';
 import { Location } from "@angular/common";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { Book } from '../model/book.interfaces';
+import { ToastController } from '@ionic/angular';
 
 
 @Component({
@@ -17,7 +18,7 @@ export class BooksDetailsPage implements OnInit {
   private id: string;
   
 
-  constructor(private location: Location, private activatedRoute: ActivatedRoute, private booksService: BooksService) {
+  constructor(private location: Location, private activatedRoute: ActivatedRoute, private booksService: BooksService, private toastController: ToastController, private router: Router) {
     // Get the ID that was passed with the URL
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
 
@@ -27,6 +28,38 @@ export class BooksDetailsPage implements OnInit {
         this.isFavorite = isFav;
       });
     });
+  }
+
+  async toastFavorite() {
+    const toast = await this.toastController.create({
+      translucent: true,
+      buttons: [
+        {
+          side: 'start',
+          icon: 'star',
+          text: 'Go to your favorites',
+          handler: () => {
+            console.log('Favorite clicked');
+            this.router.navigateByUrl('tabs/books-favorite');
+          }
+        }, {
+          text: 'Done',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        }
+      ]
+    });
+    toast.present();
+  }
+
+  async toastUnfavorite() {
+    const toast = await this.toastController.create({
+      message: 'Successfully unfavorited',
+      duration: 2000
+    });
+    toast.present();
   }
 
   // Function that store an item
