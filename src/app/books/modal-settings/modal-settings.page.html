@@ -15,9 +15,14 @@
         <ion-col text-center>
           <ion-item>
             <ion-label>Language :</ion-label>
-            <ion-select [(ngModel)]="lang" (ionChange)="onDismiss()">
+              <ion-select [(ngModel)]="lang" (ionChange)="onDismiss()" [selectedText]="storedLang" *ngIf="!storedLang; else selected">
                 <ion-select-option *ngFor="let item of languages" value="{{item.value}}">{{item.key}}</ion-select-option>
               </ion-select>
+              <ng-template #selected>
+                <ion-select [(ngModel)]="lang" (ionChange)="onDismiss()" [selectedText]="storedLang">
+                  <ion-select-option *ngFor="let item of languages" value="{{item.value}}">{{item.key}}</ion-select-option>
+                </ion-select>
+              </ng-template>              
           </ion-item>
         </ion-col>
       </ion-row>
