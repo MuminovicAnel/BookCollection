@@ -11,6 +11,27 @@ export enum SearchType {
   author = 'inauthor:',
   publisher = 'inpublisher:'
 }
+// ISO 639-1 codes
+const langRestrict = [
+  {
+    key: 'English',
+    value: "en"
+  },
+  {
+    key: 'French',
+    value: "fr"
+  },
+  {
+    key: "Italian",
+    value: "it"
+  },
+  {
+    key: "German",
+    value: "de"
+  },
+];
+
+export {langRestrict};
  
 const STORAGE_KEY = 'favoriteBooks';
 
@@ -25,7 +46,6 @@ export class BooksService {
 
   private url = 'https://www.googleapis.com/books/v1/volumes';
   private apiKey = 'AIzaSyCkz-UoN3TDdo5DC33LnlpqAzpsFHU_FBI'; // <-- Enter your own key here!
-  private lang = 'fr';
 
   /**
    * Constructor of the Service with Dependency Injection
@@ -58,8 +78,8 @@ export class BooksService {
   * @param {SearchType} type author, title, publisher or empty
   * @returns Observable with the search results
   */
-  searchData(title: string, type: SearchType) : Observable<Book[]> {
-    let url = `${this.url}?q=${type}${encodeURI(title)}&langRestrict=${this.lang}&maxResults=40&printType=all&key=${this.apiKey}`;
+  searchData(title: string, type: SearchType, langRestrict: string) : Observable<Book[]> {
+    let url = `${this.url}?q=${type}${encodeURI(title)}&langRestrict=${langRestrict}&maxResults=40&printType=all&key=${this.apiKey}`;
     return this.http.get<Book[]>(url, this.httpOptions).pipe(
       retry(3),
       catchError(err => {

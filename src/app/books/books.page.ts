@@ -1,11 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { BooksService, SearchType } from '../api/books.service';
-import { LoadingController, IonSearchbar } from '@ionic/angular';
+import { BooksService, SearchType, langRestrict } from '../api/books.service';
+import { LoadingController, IonSearchbar, ModalController } from '@ionic/angular';
 import { ViewChild } from '@angular/core';
 import { Book } from '../model/book.interfaces';
 import { Storage } from '@ionic/storage';
+import { Network } from '@ionic-native/network/ngx';
+import { ModalSettingsPage } from './modal-settings/modal-settings.page';
 
+
+const STORAGE_KEY = 'lang';
 
 @Component({
   selector: 'app-books',
@@ -17,19 +21,23 @@ export class BooksPage implements OnInit {
   
   public myData = new BehaviorSubject([]);
   private results$: Observable<Book[]>;
-  private searchTerm: string = '';
+  private searchTerm = '';
   private type: SearchType = SearchType.all;
+  private lang = langRestrict;
+  private storedLang: string;
 
-  constructor(private booksService: BooksService, private loadingController: LoadingController, private storage: Storage) { }
+  constructor(private booksService: BooksService, private loadingController: LoadingController, private storage: Storage, private network: Network, private modalCtrl: ModalController) { }
 
   ngOnInit() {
-
+    this.storage.get(STORAGE_KEY).then((value) => {
+      this.storedLang = value;
+    });
   }
 
 
   searchChanged() {
     // Call our service function which returns an Observable
-    this.results$ = this.booksService.searchData(this.searchTerm, this.type);
+    this.results$ = this.booksService.searchData(this.searchTerm, this.type, this.storedLang);
   }
 
   // Loading component
@@ -48,6 +56,17 @@ export class BooksPage implements OnInit {
 
     return await loading.present();
 
+  }
+
+  async openModal() {
+    const modal = await this.modalCtrl.create({
+      component: ModalSettingsPage,
+      componentProps: {
+        "lang": this.lang,
+      }
+    });
+ 
+    return await modal.present();
   }
 
 }
