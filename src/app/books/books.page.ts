@@ -9,7 +9,7 @@ import { Network } from '@ionic-native/network/ngx';
 import { ModalSettingsPage } from './modal-settings/modal-settings.page';
 
 
-const STORAGE_KEY = 'lang';
+const STORAGE_KEY = 'settings';
 
 @Component({
   selector: 'app-books',
@@ -30,7 +30,7 @@ export class BooksPage implements OnInit {
 
   ngOnInit() {
     this.storage.get(STORAGE_KEY).then((value) => {
-      this.storedLang = value;
+        this.storedLang = value['value'];     
     });
   }
 

@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Book } from '../model/book.interfaces';
 import { ToastController } from '@ionic/angular';
 
+const STORAGE_KEY = 'favoriteBooks';
 
 @Component({
   selector: 'app-books-details',
@@ -24,7 +25,7 @@ export class BooksDetailsPage implements OnInit {
 
     // Check if id exist in storage
     this.booksService.getDetails(this.id).subscribe((book: Book[])=> {
-      this.booksService.isFavorite(book['id']).then(isFav => {
+      this.booksService.isFavorite(book['id'], STORAGE_KEY).then(isFav => {
         this.isFavorite = isFav;
       });
     });
@@ -33,7 +34,7 @@ export class BooksDetailsPage implements OnInit {
   // Function that store an item
   async favoriteBook() {
     this.booksService.getDetails(this.id).subscribe((book: Book[])=> {
-      this.booksService.favoriteBook(book).then(() => {
+      this.booksService.favoriteBook(book, STORAGE_KEY).then(() => {
         this.isFavorite = true;
       });
     });
@@ -63,7 +64,7 @@ export class BooksDetailsPage implements OnInit {
   // Function that unset an item from the storage
   async unFavoriteBook() {
     this.booksService.getDetails(this.id).subscribe((book: Book[])=> {
-      this.booksService.unfavoriteBook(book).then(() => {
+      this.booksService.unfavoriteBook(book, STORAGE_KEY).then(() => {
         this.isFavorite = false;
       });
     });

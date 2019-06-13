@@ -32,8 +32,7 @@ const langRestrict = [
 ];
 
 export {langRestrict};
- 
-const STORAGE_KEY = 'favoriteBooks';
+
 
 @Injectable({
   providedIn: 'root'
@@ -46,6 +45,7 @@ export class BooksService {
 
   private url = 'https://www.googleapis.com/books/v1/volumes';
   private apiKey = 'AIzaSyCkz-UoN3TDdo5DC33LnlpqAzpsFHU_FBI'; // <-- Enter your own key here!
+  public maxResult: number;
 
   /**
    * Constructor of the Service with Dependency Injection
@@ -53,19 +53,18 @@ export class BooksService {
    */
   constructor(private http: HttpClient, private storage: Storage) { }
 
-  private handleError(error: HttpErrorResponse) {
-    if (error.error instanceof ErrorEvent) {
-      // A client-side or network error occurred. Handle it accordingly.
-      console.error('An error occurred:', error.error.message);
-    } else {
-      // The backend returned an unsuccessful response code.
-      // The response body may contain clues as to what went wrong,
-      console.error(
-        `Backend returned code ${error.status}, ` +
-        `body was: ${error.error}`);
-    }
-    // return an observable with a user-facing error message
-    return throwError('Something bad happened; please try again later.');
+  private handleError<T> (operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+   
+      // TODO: send the error to remote logging infrastructure
+      console.error(error); // log to console instead
+   
+      // TODO: better job of transforming error for user consumption
+      console.log(`${operation} failed: ${error.message}`);
+   
+      // Let the app keep running by returning an empty result.
+      return of(error);
+    };
   }
 
 
@@ -76,17 +75,15 @@ export class BooksService {
   * 
   * @param {string} title Search Term
   * @param {SearchType} type author, title, publisher or empty
+  * @param {langRestrict} string language
   * @returns Observable with the search results
   */
-  searchData(title: string, type: SearchType, langRestrict: string) : Observable<Book[]> {
-    let url = `${this.url}?q=${type}${encodeURI(title)}&langRestrict=${langRestrict}&maxResults=40&printType=all&key=${this.apiKey}`;
+  searchData(title: string, type: SearchType, langRestrict: string, maxResult: number) : Observable<Book[]> {
+    let url = `${this.url}?q=${type}${encodeURI(title)}&langRestrict=${langRestrict}&maxResults=${maxResult}&printType=all&key=${this.apiKey}`;
     return this.http.get<Book[]>(url, this.httpOptions).pipe(
       retry(3),
-      catchError(err => {
-      console.log(err);
-     return of(null);
-      })
-   );
+      catchError(this.handleError<Book[]>('searchData', [])
+   ));
   }
 
   /**
@@ -105,8 +102,8 @@ export class BooksService {
   * @param {string} bookId ID to retrieve information
   * @returns result
   */
-  isFavorite(bookId) {
-    return this.getAllFavoriteBooks().then(result => {
+  isFavorite(bookId, storageKey) {
+    return this.getAllFavoriteBooks(storageKey).then(result => {
       return result.some(response => 
         response.id === bookId
       );
@@ -119,13 +116,13 @@ export class BooksService {
   * @param {string} bookId ID to retrieve information
   * @returns the storage set result else the id of the book
   */
-  favoriteBook(bookId) {
-    return this.getAllFavoriteBooks().then(result => {
+  favoriteBook(bookId, storageKey) {
+    return this.getAllFavoriteBooks(storageKey).then(result => {
       if (result) {
         result.push(bookId);
-        return this.storage.set(STORAGE_KEY, result);
+        return this.storage.set(storageKey, result);
       } else {
-        return this.storage.set(STORAGE_KEY, [bookId]);
+        return this.storage.set(storageKey, [bookId]);
       }
     });
   }
@@ -136,12 +133,12 @@ export class BooksService {
   * @param {string} bookId ID to retrieve information
   * @returns the storage set result
   */
-  unfavoriteBook(bookId) {
-    return this.getAllFavoriteBooks().then(result => {
+  unfavoriteBook(bookId, storageKey) {
+    return this.getAllFavoriteBooks(storageKey).then(result => {
       if (result) {
         var index = result.indexOf(bookId);
         result.splice(index, 1);
-        return this.storage.set(STORAGE_KEY, result);
+        return this.storage.set(storageKey, result);
       }
     });
   }
@@ -152,7 +149,7 @@ export class BooksService {
   * @param {string} bookId ID to retrieve information
   * @returns storage set
   */
-  getAllFavoriteBooks() {
-    return this.storage.get(STORAGE_KEY);
+  getAllFavoriteBooks(storageKey) {
+    return this.storage.get(storageKey);
   }
 }

@@ -1,7 +1,8 @@
 import { BooksService } from './../api/books.service';
 import { Component, OnInit } from '@angular/core';
 import { Book } from '../model/book.interfaces';
-import { $ } from 'protractor';
+
+const STORAGE_KEY = 'favoriteBooks';
 
 @Component({
   selector: 'app-books-favorite',
@@ -16,13 +17,13 @@ export class BooksFavoritePage implements OnInit {
 
   ngOnInit() {
     // Return the result to view
-    this.booksService.getAllFavoriteBooks().then((value) => {
+    this.booksService.getAllFavoriteBooks(STORAGE_KEY).then((value) => {
       this.results = value;  
   });
   }
   // Refresh the list if no value loaded
   doRefresh(refresher?) {
-    this.booksService.getAllFavoriteBooks().then((value) => {
+    this.booksService.getAllFavoriteBooks(STORAGE_KEY).then((value) => {
       this.results = value;  
       if (refresher) {
           refresher.target.complete();
