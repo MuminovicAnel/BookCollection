@@ -25,6 +25,7 @@ export class BooksPage implements OnInit {
   private type: SearchType = SearchType.all;
   private lang = langRestrict;
   private storedLang: string;
+  private maxResults = '';
 
   constructor(private booksService: BooksService, private loadingController: LoadingController, private storage: Storage, private network: Network, private modalCtrl: ModalController) { }
 
@@ -37,7 +38,7 @@ export class BooksPage implements OnInit {
 
   searchChanged() {
     // Call our service function which returns an Observable
-    this.results$ = this.booksService.searchData(this.searchTerm, this.type, this.storedLang);
+    this.results$ = this.booksService.searchData(this.searchTerm, this.type, this.storedLang,);
   }
 
   // Loading component

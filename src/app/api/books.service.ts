@@ -45,7 +45,7 @@ export class BooksService {
 
   private url = 'https://www.googleapis.com/books/v1/volumes';
   private apiKey = 'AIzaSyCkz-UoN3TDdo5DC33LnlpqAzpsFHU_FBI'; // <-- Enter your own key here!
-  public maxResult: number;
+  public maxResult: string;
 
   /**
    * Constructor of the Service with Dependency Injection
@@ -78,7 +78,7 @@ export class BooksService {
   * @param {langRestrict} string language
   * @returns Observable with the search results
   */
-  searchData(title: string, type: SearchType, langRestrict: string, maxResult: number) : Observable<Book[]> {
+  searchData(title: string, type: SearchType, langRestrict: string, maxResult: string) : Observable<Book[]> {
     let url = `${this.url}?q=${type}${encodeURI(title)}&langRestrict=${langRestrict}&maxResults=${maxResult}&printType=all&key=${this.apiKey}`;
     return this.http.get<Book[]>(url, this.httpOptions).pipe(
       retry(3),
@@ -146,10 +146,33 @@ export class BooksService {
   /**
   * Get all books in the storage
   * 
-  * @param {string} bookId ID to retrieve information
+  * @param {string} storageKey to retrieve information
   * @returns storage set
   */
   getAllFavoriteBooks(storageKey) {
     return this.storage.get(storageKey);
   }
+
+  /**
+  * Update item in storage
+  * 
+  * @param {arary} res contains the result
+  * @param {array} value contains the array of information
+  * @param {string} storageKey contains the key
+  * @returns storage set
+  */
+  /* storeUpdate(res, value, storageKey) {
+    this.getAllFavoriteBooks(storageKey).then(result => {
+      result.forEach(item => {
+        if(!item.value) {
+          this.favoriteBook(value, storageKey)
+        } else {
+          res = [] = item
+          res.value = value['value']
+          res.key = value['key']
+          this.storage.set(storageKey, [res])
+        }
+    });
+  });
+  } */
 }
