@@ -5,7 +5,8 @@ import { Storage } from '@ionic/storage';
 import { PickerOptions } from '@ionic/core';
 import { BooksService, } from '../../api/books.service';
 
-const STORAGE_KEY = 'settings';
+const storageLang = 'lang';
+const storageMaxResult = 'maxResult';
 
 @Component({
   selector: 'app-modal-settings',
@@ -32,12 +33,19 @@ export class ModalSettingsPage implements OnInit {
   ngOnInit() {
     console.table(this.navParams);
     this.languages = this.navParams.data.lang;
-    this.storage.get(STORAGE_KEY).then(value => {
+    this.storage.get(storageLang).then(value => {
       value.forEach(item => {
         console.log(item)
         if(item) {
           this.storedLang = item['key'];
-          this.number = item;
+        }
+      });
+    });
+    this.storage.get(storageMaxResult).then(value => {
+      value.forEach(item => {
+        console.log(item)
+        if(item) {
+          this.number = item['value'];
         }
       });
     });
@@ -51,20 +59,49 @@ export class ModalSettingsPage implements OnInit {
       }
     });
       // Set the language setting and overwrite previous value
-      this.booksService.getAllFavoriteBooks(STORAGE_KEY).then(result => {
-        result.forEach(item => {
-          if(item.value === this.lang['value']) {
-            //this.booksService.favoriteBook(this.lang, STORAGE_KEY)
-          } else {
-            let res = [] = item
-            res.value = this.lang['value']
-            res.key = this.lang['key']
-            this.storage.set(STORAGE_KEY, [res])
-          }
-      });
+      this.booksService.getAllFavoriteBooks(storageLang).then(result => {
+        if(result && result.length) {
+          result.forEach(item => {
+            if(item.value === this.lang['value']) {
+              //this.booksService.favoriteBook(this.lang, storageLang)
+            } else {
+              let res = [] = item
+              res.value = this.lang['value']
+              res.key = this.lang['key']
+              this.storage.set(storageLang, [res])
+            }
+          });
+        } else {
+          let res = []
+            res.push({
+              key: this.lang['key'], value: this.lang['value']
+            })
+            this.storage.set(storageLang, res)
+        }
     });
+    this.booksService.favoriteBook(this.maxResult, storageMaxResult)
     if(this.maxResult) {
-      this.booksService.favoriteBook(this.maxResult, STORAGE_KEY)
+      this.booksService.getAllFavoriteBooks(storageMaxResult).then(result => {
+        if(result && result.length) {
+          result.forEach(item => {
+            if(item.value === this.maxResult['value']) {
+              //this.booksService.favoriteBook(this.maxResult, storageMaxResult)
+            } else {
+              let res = [] = item
+              res.value = this.maxResult['value']
+              res.key = this.maxResult['text']
+              console.log(res)
+              this.storage.set(storageMaxResult, [res])
+            }
+          });
+        } else {
+            let res = []
+            res.push({
+              text: this.maxResult['text'], value: this.maxResult['value']
+            })
+            this.storage.set(storageMaxResult, res)
+        }
+    });
     }
 
   }

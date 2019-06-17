@@ -45,7 +45,7 @@ export class BooksService {
 
   private url = 'https://www.googleapis.com/books/v1/volumes';
   private apiKey = 'AIzaSyCkz-UoN3TDdo5DC33LnlpqAzpsFHU_FBI'; // <-- Enter your own key here!
-  public maxResult: string;
+  public maxResult: number;
 
   /**
    * Constructor of the Service with Dependency Injection
@@ -78,7 +78,7 @@ export class BooksService {
   * @param {langRestrict} string language
   * @returns Observable with the search results
   */
-  searchData(title: string, type: SearchType, langRestrict: string, maxResult: string) : Observable<Book[]> {
+  searchData(title: string, type: SearchType, langRestrict: string, maxResult: number) : Observable<Book[]> {
     let url = `${this.url}?q=${type}${encodeURI(title)}&langRestrict=${langRestrict}&maxResults=${maxResult}&printType=all&key=${this.apiKey}`;
     return this.http.get<Book[]>(url, this.httpOptions).pipe(
       retry(3),

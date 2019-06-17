@@ -9,7 +9,8 @@ import { Network } from '@ionic-native/network/ngx';
 import { ModalSettingsPage } from './modal-settings/modal-settings.page';
 
 
-const STORAGE_KEY = 'settings';
+const storageLang = 'lang';
+const storageMaxResult = 'maxResult';
 
 @Component({
   selector: 'app-books',
@@ -25,20 +26,29 @@ export class BooksPage implements OnInit {
   private type: SearchType = SearchType.all;
   private lang = langRestrict;
   private storedLang: string;
-  private maxResults = '';
+  private maxResults: number;
 
   constructor(private booksService: BooksService, private loadingController: LoadingController, private storage: Storage, private network: Network, private modalCtrl: ModalController) { }
 
   ngOnInit() {
-    this.storage.get(STORAGE_KEY).then((value) => {
-        this.storedLang = value['value'];     
+    this.storage.get(storageLang).then((value) => {
+      value.forEach(item => {
+        this.storedLang = item['value'];   
+      });
+          
     });
+    this.storage.get(storageMaxResult).then((value) => {
+      value.forEach(item => {
+        this.maxResults = item['value'];
+      });
+           
+  });
   }
 
 
   searchChanged() {
     // Call our service function which returns an Observable
-    this.results$ = this.booksService.searchData(this.searchTerm, this.type, this.storedLang,);
+    this.results$ = this.booksService.searchData(this.searchTerm, this.type, this.storedLang, this.maxResults);
   }
 
   // Loading component
