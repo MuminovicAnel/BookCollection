@@ -93,7 +93,23 @@ export class BooksService {
   * @returns Observable with detailed information
   */
   getDetails(id) : Observable<Book[]> {
-    return this.http.get<Book[]>(`${this.url}/${id}?key=${this.apiKey}`, this.httpOptions);
+    return this.http.get<Book[]>(`${this.url}/${id}?key=${this.apiKey}`, this.httpOptions).pipe(
+      retry(3),
+      catchError(this.handleError<Book[]>('getDetails', [])
+   ));;
+  }
+
+  /**
+  * Get a book by his isbn number
+  * 
+  * @param {string} isbn ID to retrieve information
+  * @returns Observable with detailed information
+  */
+ getISBN(isbn: string) : Observable<Book[]> {
+    return this.http.get<Book[]>(`${this.url}?q=isbn:${isbn}?key=${this.apiKey}`, this.httpOptions).pipe(
+      retry(3),
+      catchError(this.handleError<Book[]>('getISBN', [])
+   ));;
   }
 
   /**

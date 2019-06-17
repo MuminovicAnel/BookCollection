@@ -16,7 +16,7 @@ const storageMaxResult = 'maxResult';
 export class ModalSettingsPage implements OnInit {
 
   private languages: Array<string>;
-  private lang = [] = langRestrict;
+  private lang = {} = langRestrict;
   private storedLang: string;
   private number: string;
   private textNumber = '';
@@ -55,7 +55,8 @@ export class ModalSettingsPage implements OnInit {
     await this.modalController.dismiss()
     this.languages.forEach(item => {
       if(item['value'] === this.lang) {
-        this.lang = item;
+        let res: any = item
+        this.lang = res;
       }
     });
       // Set the language setting and overwrite previous value
@@ -79,7 +80,6 @@ export class ModalSettingsPage implements OnInit {
             this.storage.set(storageLang, res)
         }
     });
-    this.booksService.favoriteBook(this.maxResult, storageMaxResult)
     if(this.maxResult) {
       this.booksService.getAllFavoriteBooks(storageMaxResult).then(result => {
         if(result && result.length) {

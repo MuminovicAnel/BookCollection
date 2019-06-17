@@ -7,6 +7,7 @@ import { Book } from '../model/book.interfaces';
 import { Storage } from '@ionic/storage';
 import { Network } from '@ionic-native/network/ngx';
 import { ModalSettingsPage } from './modal-settings/modal-settings.page';
+import { Router } from '@angular/router';
 
 
 const storageLang = 'lang';
@@ -28,21 +29,26 @@ export class BooksPage implements OnInit {
   private storedLang: string;
   private maxResults: number;
 
-  constructor(private booksService: BooksService, private loadingController: LoadingController, private storage: Storage, private network: Network, private modalCtrl: ModalController) { }
+  constructor(private booksService: BooksService, private loadingController: LoadingController, private storage: Storage, private network: Network, private modalCtrl: ModalController, private router: Router) { }
 
   ngOnInit() {
-    this.storage.get(storageLang).then((value) => {
-      value.forEach(item => {
-        this.storedLang = item['value'];   
-      });
-          
+    this.storage.keys().then(item => {
+      if(item.length != 0){
+        this.storage.get(storageLang).then((value) => {
+          value.forEach(item => {
+            this.storedLang = item.value;   
+          });            
+        });
+        this.storage.get(storageMaxResult).then((value) => {
+          value.forEach(item => {
+            this.maxResults = item.value;
+          });                
+        });
+      } else {
+        this.openModal()
+      }
     });
-    this.storage.get(storageMaxResult).then((value) => {
-      value.forEach(item => {
-        this.maxResults = item['value'];
-      });
-           
-  });
+      
   }
 
 
@@ -55,7 +61,7 @@ export class BooksPage implements OnInit {
   async presentLoadingWithOptions() {
     const loading = await this.loadingController.create({
       spinner: null,
-      duration: 100,
+      duration: 50,
       message: 'Please wait...',
       translucent: true,
       cssClass: 'custom-class custom-loading'
