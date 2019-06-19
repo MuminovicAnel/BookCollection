@@ -3,12 +3,17 @@
     <ion-title>
       Books Collection
     </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="openModal($event)">
+        <ion-icon slot="icon-only" name="settings"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
 
-    <ion-searchbar #mainSearchbar debounce="400" [(ngModel)]="searchTerm" (search)="searchChanged($event)" (search)="presentLoadingWithOptions($event)"></ion-searchbar>
+    <ion-searchbar #mainSearchbar debounce="50" [(ngModel)]="searchTerm" (ionChange)="searchChanged($event)" (ionChange)="presentLoadingWithOptions($event)"></ion-searchbar>
     <ion-item>
       <ion-label>Select Searchtype</ion-label>
       <ion-select [(ngModel)]="type">
@@ -37,7 +42,7 @@
           
           <p *ngIf="item.volumeInfo.publisher">{{ item.volumeInfo.publisher }}</p>            
         </ion-label>         
-      </ion-item>  
+      </ion-item> 
     </ion-list>
     
 </ion-content>

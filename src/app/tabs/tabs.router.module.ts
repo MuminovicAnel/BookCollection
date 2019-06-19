@@ -26,11 +26,11 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'tab3',
+        path: 'books-scan',
         children: [
           {
             path: '',
-            loadChildren: '../tab3/tab3.module#Tab3PageModule'
+            loadChildren: '../books-scan/books-scan.module#BooksScanPageModule'
           }
         ]
       },

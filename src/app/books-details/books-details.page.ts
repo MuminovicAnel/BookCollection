@@ -1,9 +1,11 @@
 import { BooksService } from './../api/books.service';
 import { Component, OnInit } from '@angular/core';
 import { Location } from "@angular/common";
-import { ActivatedRoute } from "@angular/router";
-import { Book } from '../model/book.interfaces';
+import { ActivatedRoute, Router } from "@angular/router";
+import { Book, Items } from '../model/book.interfaces';
+import { ToastController } from '@ionic/angular';
 
+const STORAGE_KEY = 'favoriteBooks';
 
 @Component({
   selector: 'app-books-details',
@@ -12,45 +14,72 @@ import { Book } from '../model/book.interfaces';
 })
 export class BooksDetailsPage implements OnInit {
 
-  private book: Book[];
+  private book: Items[];
   private isFavorite = false;
   private id: string;
   
 
-  constructor(private location: Location, private activatedRoute: ActivatedRoute, private booksService: BooksService) {
+  constructor(private location: Location, private activatedRoute: ActivatedRoute, private booksService: BooksService, private toastController: ToastController, private router: Router) {
     // Get the ID that was passed with the URL
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
 
     // Check if id exist in storage
-    this.booksService.getDetails(this.id).subscribe((book: Book[])=> {
-      this.booksService.isFavorite(book['id']).then(isFav => {
+    this.booksService.getDetails(this.id).subscribe((items: Items[])=> {
+      this.booksService.isFavorite(items['id'], STORAGE_KEY).then(isFav => {
         this.isFavorite = isFav;
       });
     });
   }
 
   // Function that store an item
-  favoriteBook() {
-    this.booksService.getDetails(this.id).subscribe((book: Book[])=> {
-      this.booksService.favoriteBook(book).then(() => {
+  async favoriteBook() {
+    this.booksService.getDetails(this.id).subscribe((items: Items[])=> {
+      this.booksService.favoriteBook(items[''], STORAGE_KEY).then(() => {
         this.isFavorite = true;
       });
     });
+    const toast = await this.toastController.create({
+      translucent: true,
+      duration: 5000,
+      buttons: [
+        {
+          side: 'start',
+          icon: 'star',
+          text: 'Go to your favorites',
+          handler: () => {
+            console.log('Favorite clicked');
+            this.router.navigateByUrl('tabs/books-favorite');
+          }
+        }, {
+          text: 'Done',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        }
+      ]
+    });
+    toast.present();
   }
 
   // Function that unset an item from the storage
-  unFavoriteBook() {
-    this.booksService.getDetails(this.id).subscribe((book: Book[])=> {
-      this.booksService.unfavoriteBook(book).then(() => {
+  async unFavoriteBook() {
+    this.booksService.getDetails(this.id).subscribe((items: Items[])=> {
+      this.booksService.unfavoriteBook(items[''], STORAGE_KEY).then(() => {
         this.isFavorite = false;
       });
     });
+    const toast = await this.toastController.create({
+      message: 'Successfully unfavorited',
+      duration: 2000
+    });
+    toast.present();
   }
 
 
   ngOnInit() {   
     // Get the information from the API
-    this.booksService.getDetails(this.id).subscribe((book: Book[])=> {
+    this.booksService.getDetails(this.id).subscribe((book: Items[])=> {
       this.book = book;
     });
   }
