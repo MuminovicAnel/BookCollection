@@ -37,7 +37,7 @@ export class ModalSettingsPage implements OnInit {
       value.forEach(item => {
         console.log(item)
         if(item) {
-          this.storedLang = item['key'];
+          this.storedLang = item['text'];
         }
       });
     });
@@ -60,48 +60,11 @@ export class ModalSettingsPage implements OnInit {
       }
     });
       // Set the language setting and overwrite previous value
-      this.booksService.getAllFavoriteBooks(storageLang).then(result => {
-        if(result && result.length) {
-          result.forEach(item => {
-            if(item.value === this.lang['value']) {
-              //this.booksService.favoriteBook(this.lang, storageLang)
-            } else {
-              let res = [] = item
-              res.value = this.lang['value']
-              res.key = this.lang['key']
-              this.storage.set(storageLang, [res])
-            }
-          });
-        } else {
-          let res = []
-            res.push({
-              key: this.lang['key'], value: this.lang['value']
-            })
-            this.storage.set(storageLang, res)
-        }
-    });
+    if(this.lang === undefined) {
+      this.booksService.storeUpdate(this.lang, storageLang)
+    }
     if(this.maxResult) {
-      this.booksService.getAllFavoriteBooks(storageMaxResult).then(result => {
-        if(result && result.length) {
-          result.forEach(item => {
-            if(item.value === this.maxResult['value']) {
-              //this.booksService.favoriteBook(this.maxResult, storageMaxResult)
-            } else {
-              let res = [] = item
-              res.value = this.maxResult['value']
-              res.key = this.maxResult['text']
-              console.log(res)
-              this.storage.set(storageMaxResult, [res])
-            }
-          });
-        } else {
-            let res = []
-            res.push({
-              text: this.maxResult['text'], value: this.maxResult['value']
-            })
-            this.storage.set(storageMaxResult, res)
-        }
-    });
+      this.booksService.storeUpdate(this.maxResult, storageMaxResult)
     }
 
   }
@@ -139,9 +102,7 @@ export class ModalSettingsPage implements OnInit {
     picker.onDidDismiss().then(async data => {
       let col = await picker.getColumn('MaxResult');
       this.textNumber = col.options[col.selectedIndex].text;
-      console.log(this.textNumber)
       this.maxResult = col.options[col.selectedIndex];
-      console.log(this.maxResult)
     });
 
     return await picker.present();

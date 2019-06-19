@@ -16,11 +16,11 @@
           <ion-item>
             <ion-label>Language :</ion-label>
               <ion-select [(ngModel)]="lang" *ngIf="!storedLang; else selected">
-                <ion-select-option *ngFor="let item of languages" value="{{item.value}}">{{item.key}}</ion-select-option>
+                <ion-select-option *ngFor="let item of languages" value="{{item.value}}">{{item.text}}</ion-select-option>
               </ion-select>
               <ng-template #selected>
                 <ion-select [(ngModel)]="lang" [selectedText]="storedLang">
-                  <ion-select-option *ngFor="let item of languages" value="{{item.value}}">{{item.key}}</ion-select-option>
+                  <ion-select-option *ngFor="let item of languages" value="{{item.value}}">{{item.text}}</ion-select-option>
                 </ion-select>
               </ng-template>              
           </ion-item>

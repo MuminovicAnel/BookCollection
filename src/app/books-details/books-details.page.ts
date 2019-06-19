@@ -40,6 +40,7 @@ export class BooksDetailsPage implements OnInit {
     });
     const toast = await this.toastController.create({
       translucent: true,
+      duration: 5000,
       buttons: [
         {
           side: 'start',

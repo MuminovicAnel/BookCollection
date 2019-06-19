@@ -14,19 +14,19 @@ export enum SearchType {
 // ISO 639-1 codes
 const langRestrict = [
   {
-    key: 'English',
+    text: 'English',
     value: "en"
   },
   {
-    key: 'French',
+    text: 'French',
     value: "fr"
   },
   {
-    key: "Italian",
+    text: "Italian",
     value: "it"
   },
   {
-    key: "German",
+    text: "German",
     value: "de"
   },
 ];
@@ -118,7 +118,7 @@ export class BooksService {
   * @param {string} bookId ID to retrieve information
   * @returns result
   */
-  isFavorite(bookId, storageKey) {
+  isFavorite(bookId: Book, storageKey: string): Promise<any> {
     return this.getAllFavoriteBooks(storageKey).then(result => {
       return result.some(response => 
         response.id === bookId
@@ -132,8 +132,8 @@ export class BooksService {
   * @param {string} bookId ID to retrieve information
   * @returns the storage set result else the id of the book
   */
-  favoriteBook(bookId, storageKey) {
-    return this.getAllFavoriteBooks(storageKey).then(result => {
+  favoriteBook(bookId: Book, storageKey: string): Promise<Book> {
+    return this.getAllFavoriteBooks(storageKey).then((result: Book[]) => {
       if (result) {
         result.push(bookId);
         return this.storage.set(storageKey, result);
@@ -149,8 +149,8 @@ export class BooksService {
   * @param {string} bookId ID to retrieve information
   * @returns the storage set result
   */
-  unfavoriteBook(bookId, storageKey) {
-    return this.getAllFavoriteBooks(storageKey).then(result => {
+  unfavoriteBook(bookId: Book, storageKey: string): Promise<Book> {
+    return this.getAllFavoriteBooks(storageKey).then((result: Book[]) => {
       if (result) {
         var index = result.indexOf(bookId);
         result.splice(index, 1);
@@ -165,7 +165,7 @@ export class BooksService {
   * @param {string} storageKey to retrieve information
   * @returns storage set
   */
-  getAllFavoriteBooks(storageKey) {
+  getAllFavoriteBooks(storageKey: string) {
     return this.storage.get(storageKey);
   }
 
@@ -177,18 +177,26 @@ export class BooksService {
   * @param {string} storageKey contains the key
   * @returns storage set
   */
-  /* storeUpdate(res, value, storageKey) {
-    this.getAllFavoriteBooks(storageKey).then(result => {
-      result.forEach(item => {
-        if(!item.value) {
-          this.favoriteBook(value, storageKey)
-        } else {
-          res = [] = item
-          res.value = value['value']
-          res.key = value['key']
-          this.storage.set(storageKey, [res])
-        }
-    });
+  storeUpdate(value: any, storageKey: string): Promise<any> {
+    return this.getAllFavoriteBooks(storageKey).then(result => {
+      if(result && result.length === 0) {
+        result.forEach(item => {
+          if(item.value === value) {
+            return null
+          } else {
+            let res = [] = item
+            res.value = value['value']
+            res.text = value['text']
+            return this.storage.set(storageKey, [res])
+          }
+        });
+      } else {
+        let res = []
+        res.push({
+          text: value['text'], value: value['value']
+        })
+        return this.storage.set(storageKey, res)
+      }      
   });
-  } */
+  }
 }
