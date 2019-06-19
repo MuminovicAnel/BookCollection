@@ -31,6 +31,10 @@
                 <ion-label color="primary" slot="end">{{textNumber}}</ion-label>
             </ng-template>
           </ion-item>
+          <ion-item>
+              <ion-label slot="start">Switch theme :</ion-label>
+              <theme-switch-select [themes]="themes" slot="end"></theme-switch-select>
+          </ion-item>
         </ion-col>
       </ion-row>
     </ion-grid>

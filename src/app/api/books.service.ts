@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 import { retry, catchError} from 'rxjs/operators';
-import { Book } from '../model/book.interfaces';
+import { Book , Items} from '../model/book.interfaces';
 import { Storage } from '@ionic/storage';
 
 export enum SearchType {
@@ -92,10 +92,10 @@ export class BooksService {
   * @param {string} id ID to retrieve information
   * @returns Observable with detailed information
   */
-  getDetails(id) : Observable<Book[]> {
-    return this.http.get<Book[]>(`${this.url}/${id}?key=${this.apiKey}`, this.httpOptions).pipe(
+  getDetails(id) : Observable<Items[]> {
+    return this.http.get<Items[]>(`${this.url}/${id}?key=${this.apiKey}`, this.httpOptions).pipe(
       retry(3),
-      catchError(this.handleError<Book[]>('getDetails', [])
+      catchError(this.handleError<Items[]>('getDetails', [])
    ));;
   }
 
@@ -118,7 +118,7 @@ export class BooksService {
   * @param {string} bookId ID to retrieve information
   * @returns result
   */
-  isFavorite(bookId: Book, storageKey: string): Promise<any> {
+  isFavorite(bookId, storageKey: string): Promise<boolean> {
     return this.getAllFavoriteBooks(storageKey).then(result => {
       return result.some(response => 
         response.id === bookId
@@ -132,8 +132,8 @@ export class BooksService {
   * @param {string} bookId ID to retrieve information
   * @returns the storage set result else the id of the book
   */
-  favoriteBook(bookId: Book, storageKey: string): Promise<Book> {
-    return this.getAllFavoriteBooks(storageKey).then((result: Book[]) => {
+  favoriteBook(bookId: Items, storageKey: string): Promise<Items> {
+    return this.getAllFavoriteBooks(storageKey).then((result: Items[]) => {
       if (result) {
         result.push(bookId);
         return this.storage.set(storageKey, result);
@@ -149,8 +149,8 @@ export class BooksService {
   * @param {string} bookId ID to retrieve information
   * @returns the storage set result
   */
-  unfavoriteBook(bookId: Book, storageKey: string): Promise<Book> {
-    return this.getAllFavoriteBooks(storageKey).then((result: Book[]) => {
+  unfavoriteBook(bookId: Items, storageKey: string): Promise<Items> {
+    return this.getAllFavoriteBooks(storageKey).then((result: Items[]) => {
       if (result) {
         var index = result.indexOf(bookId);
         result.splice(index, 1);

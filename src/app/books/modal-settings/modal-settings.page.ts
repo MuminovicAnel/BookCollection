@@ -4,6 +4,7 @@ import { langRestrict } from '../../api/books.service';
 import { Storage } from '@ionic/storage';
 import { PickerOptions } from '@ionic/core';
 import { BooksService, } from '../../api/books.service';
+import { SelectTheme } from 'ionic-angular-theme-switch';
 
 const storageLang = 'lang';
 const storageMaxResult = 'maxResult';
@@ -14,6 +15,86 @@ const storageMaxResult = 'maxResult';
   styleUrls: ['./modal-settings.page.scss'],
 })
 export class ModalSettingsPage implements OnInit {
+
+  public themes: SelectTheme[] = [
+    {
+      key: 'default',
+      theme: {}
+    },
+    {
+      key: 'vibrant',
+      label: 'Vibrant',
+      theme: {
+        primary: '#ff7f50',
+        secondary: '#17deee',
+        tertiary: '#ff4162',
+        success: '#39ff14',
+        warning: '#ffce00',
+        danger: '#f04141',
+        light: '#f4f5f8',
+        medium: '#989aa2',
+        dark: '#222428',
+       
+        'ion-background-color': '#778899',
+       
+        /* Component Colors */
+        'ion-backdrop-color': '#556677',
+        'ion-overlay-background-color': '#667788',
+       
+        'ion-border-color': '#5bff76',
+        'ion-box-shadow-color': '#000',
+       
+        'ion-item-background': '#667788',
+        'ion-item-border-color': '#5bff76'
+       }
+    },
+    {
+      key: 'dark',
+      label: 'Dark',
+      theme: {
+        'ion-background-color': '#171717',
+        'ion-text-color': '#fff',
+       
+        /* Component Colors */
+        'ion-backdrop-color': '#2e2e2e',
+        'ion-overlay-background-color': '#454545',
+       
+        'ion-border-color': '#5d5d5d',
+        'ion-box-shadow-color': '#000',
+       
+        'ion-item-background': '#2e2e2e',
+        'ion-item-background-activated': '#454545'
+      }
+    },
+    {
+      key: 'oceanic',
+      label: 'Oceanic',
+      theme: {
+        primary: '#549ee7',
+        secondary: '#5fb3b3',
+        tertiary: '#fac863',
+        success: '#90d089',
+        warning: '#f99157',
+        danger: '#ec5f67',
+        light: '#d8dee9',
+        medium: '#65737e',
+        dark: '#1b2b34',
+       
+        'ion-background-color': '#1b2b34',
+        'ion-text-color': '#fff',
+       
+        /* Component Colors */
+        'ion-backdrop-color': '#1b2b34',
+        'ion-overlay-background-color': '#142129',
+       
+        'ion-border-color': '#1b2b34',
+        'ion-box-shadow-color': '#000',
+       
+        'ion-item-background': '#343d46',
+        'ion-item-background-activated': '#232b34'
+       }
+    }
+    ];
 
   private languages: Array<string>;
   private lang = {} = langRestrict;
@@ -27,7 +108,7 @@ export class ModalSettingsPage implements OnInit {
     private navParams: NavParams,
     private storage: Storage,
     private pickerCtrl: PickerController,
-    private booksService: BooksService
+    private booksService: BooksService,
   ) { }
  
   ngOnInit() {

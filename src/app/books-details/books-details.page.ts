@@ -2,7 +2,7 @@ import { BooksService } from './../api/books.service';
 import { Component, OnInit } from '@angular/core';
 import { Location } from "@angular/common";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Book } from '../model/book.interfaces';
+import { Book, Items } from '../model/book.interfaces';
 import { ToastController } from '@ionic/angular';
 
 const STORAGE_KEY = 'favoriteBooks';
@@ -14,7 +14,7 @@ const STORAGE_KEY = 'favoriteBooks';
 })
 export class BooksDetailsPage implements OnInit {
 
-  private book: Book[];
+  private book: Items[];
   private isFavorite = false;
   private id: string;
   
@@ -24,8 +24,8 @@ export class BooksDetailsPage implements OnInit {
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
 
     // Check if id exist in storage
-    this.booksService.getDetails(this.id).subscribe((book: Book[])=> {
-      this.booksService.isFavorite(book['id'], STORAGE_KEY).then(isFav => {
+    this.booksService.getDetails(this.id).subscribe((items: Items[])=> {
+      this.booksService.isFavorite(items['id'], STORAGE_KEY).then(isFav => {
         this.isFavorite = isFav;
       });
     });
@@ -33,8 +33,8 @@ export class BooksDetailsPage implements OnInit {
 
   // Function that store an item
   async favoriteBook() {
-    this.booksService.getDetails(this.id).subscribe((book: Book[])=> {
-      this.booksService.favoriteBook(book, STORAGE_KEY).then(() => {
+    this.booksService.getDetails(this.id).subscribe((items: Items[])=> {
+      this.booksService.favoriteBook(items[''], STORAGE_KEY).then(() => {
         this.isFavorite = true;
       });
     });
@@ -64,8 +64,8 @@ export class BooksDetailsPage implements OnInit {
 
   // Function that unset an item from the storage
   async unFavoriteBook() {
-    this.booksService.getDetails(this.id).subscribe((book: Book[])=> {
-      this.booksService.unfavoriteBook(book, STORAGE_KEY).then(() => {
+    this.booksService.getDetails(this.id).subscribe((items: Items[])=> {
+      this.booksService.unfavoriteBook(items[''], STORAGE_KEY).then(() => {
         this.isFavorite = false;
       });
     });
@@ -79,7 +79,7 @@ export class BooksDetailsPage implements OnInit {
 
   ngOnInit() {   
     // Get the information from the API
-    this.booksService.getDetails(this.id).subscribe((book: Book[])=> {
+    this.booksService.getDetails(this.id).subscribe((book: Items[])=> {
       this.book = book;
     });
   }

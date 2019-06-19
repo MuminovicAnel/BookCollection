@@ -47,6 +47,7 @@ export class BooksPage implements OnInit {
           });            
         });
         this.storage.get(storageMaxResult).then((value) => {
+          console.log(value)
           value.forEach(item => {
             this.maxResults = item.value;
           });                
