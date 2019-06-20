@@ -38,5 +38,8 @@
         </ion-col>
       </ion-row>
     </ion-grid>
-    <ion-button (click)="storeSettings()" expand="full" [disabled]="disabled">Save</ion-button>
   </ion-content>
+  <div padding>
+    <ion-button expand="block" color="primary" slot="end" (click)="storeSettings($event)" [disabled]="disabled">Save</ion-button>
+  </div>
+    

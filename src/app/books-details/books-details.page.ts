@@ -33,7 +33,7 @@ export class BooksDetailsPage implements OnInit {
 
   // Function that store an item
   async favoriteBook() {
-    this.booksService.getDetails(this.id).subscribe((book: Book[])=> {
+    this.booksService.getDetails(this.id).subscribe((book: Book)=> {
       this.booksService.favoriteBook(book, STORAGE_KEY).then(() => {
         this.isFavorite = true;
       });
@@ -45,13 +45,13 @@ export class BooksDetailsPage implements OnInit {
         {
           side: 'start',
           icon: 'star',
-          text: 'Go to your favorites',
+          text: 'Added in your favorites !',
           handler: () => {
             console.log('Favorite clicked');
             this.router.navigateByUrl('tabs/books-favorite');
           }
         }, {
-          text: 'Done',
+          icon: 'close',
           role: 'cancel',
           handler: () => {
             console.log('Cancel clicked');
@@ -64,7 +64,7 @@ export class BooksDetailsPage implements OnInit {
 
   // Function that unset an item from the storage
   async unFavoriteBook() {
-    this.booksService.getDetails(this.id).subscribe((book: Book[])=> {
+    this.booksService.getDetails(this.id).subscribe((book: Book)=> {
       this.booksService.unfavoriteBook(book, STORAGE_KEY).then(() => {
         this.isFavorite = false;
       });

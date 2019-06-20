@@ -14,6 +14,7 @@ npm-debug.log*
 
 .idea/
 .ionic/
+.gradle/
 .sourcemaps/
 .sass-cache/
 .tmp/

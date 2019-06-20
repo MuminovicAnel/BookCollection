@@ -19,7 +19,7 @@ export class BooksFavoritePage implements OnInit {
     // Return the result to view
     this.booksService.getAllFavoriteBooks(STORAGE_KEY).then((value) => {
       this.results = value;  
-  });
+    });
   }
   // Refresh the list if no value loaded
   doRefresh(refresher?) {
@@ -28,8 +28,7 @@ export class BooksFavoritePage implements OnInit {
       if (refresher) {
           refresher.target.complete();
       }
-  });
-
-}
+    });
+  }
   
 }

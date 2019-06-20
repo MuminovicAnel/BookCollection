@@ -40,7 +40,7 @@ export {langRestrict};
 export class BooksService {
 
   httpOptions = {
-    headers: new HttpHeaders({'Content-Type': 'application/json'})
+    //headers: new HttpHeaders({'Content-Type': 'application/json'})
   };
 
   private url = 'https://www.googleapis.com/books/v1/volumes';
@@ -96,7 +96,7 @@ export class BooksService {
     return this.http.get<Book[]>(`${this.url}/${id}?key=${this.apiKey}`, this.httpOptions).pipe(
       retry(3),
       catchError(this.handleError<Book[]>('getDetails', [])
-   ));;
+   ));
   }
 
   /**
@@ -106,10 +106,10 @@ export class BooksService {
   * @returns Observable with detailed information
   */
  getISBN(isbn: string) : Observable<Book[]> {
-    return this.http.get<Book[]>(`${this.url}?q=isbn:${isbn}?key=${this.apiKey}`, this.httpOptions).pipe(
+    return this.http.get<Book[]>(`${this.url}?q=isbn:${isbn}&key=${this.apiKey}`, this.httpOptions).pipe(
       retry(3),
       catchError(this.handleError<Book[]>('getISBN', [])
-   ));;
+   ));
   }
 
   /**

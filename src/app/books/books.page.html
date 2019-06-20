@@ -3,6 +3,11 @@
     <ion-title>
       Books Collection
     </ion-title>
+    <ion-buttons slot="start">
+      <ion-button (click)="scanBarcode($event)">
+        <ion-icon slot="icon-only" name="qr-scanner" size="large"></ion-icon>
+      </ion-button>
+    </ion-buttons>
     <ion-buttons slot="end">
       <ion-button (click)="openModal($event)">
         <ion-icon slot="icon-only" name="settings"></ion-icon>
@@ -13,7 +18,7 @@
 
 <ion-content>
 
-    <ion-searchbar #mainSearchbar debounce="100" [(ngModel)]="searchTerm" (ionChange)="searchChanged($event)" (ionChange)="presentLoadingWithOptions($event)"></ion-searchbar>
+    <ion-searchbar #mainSearchbar debounce="100" [(ngModel)]="searchTerm" (search)="searchChanged($event)" (search)="presentLoadingWithOptions($event)"></ion-searchbar>
     <ion-item>
       <ion-label>Select Searchtype</ion-label>
       <ion-select [(ngModel)]="type">
@@ -23,6 +28,14 @@
         <ion-select-option value="inpublisher:">Publisher</ion-select-option>
       </ion-select>
     </ion-item>
+    <div *ngIf="isbnResult">
+      <p>
+        Scanned Code Text : <b>{{ scannedData["text"] }}</b>
+      </p>
+      <p>
+        Scanned Code Format : <b>{{ scannedData["format"] }}</b>
+      </p>
+    </div>
 
     <ion-list>
       <ion-item button *ngFor="let item of (results$ | async)?.items" [routerLink]="['/', 'books', item.id]">

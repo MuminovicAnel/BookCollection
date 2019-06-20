@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { BarcodeScanner, BarcodeScannerOptions } from '@ionic-native/barcode-scanner/ngx';
+import { BooksService } from '../api/books.service';
+import { Book } from '../model/book.interfaces';
+
+const STORAGE_KEY = 'wishListBooks';
 
 @Component({
   selector: 'app-books-scan',
@@ -8,33 +11,28 @@ import { BarcodeScanner, BarcodeScannerOptions } from '@ionic-native/barcode-sca
 })
 export class BooksScanPage implements OnInit {
 
-  scannedData: {};
-  barcodeScannerOptions: BarcodeScannerOptions;
+  private results: Book[];
 
-  constructor(private barcodeScanner: BarcodeScanner) {
-    //Options
-    this.barcodeScannerOptions = {
-      showTorchButton: true,
-      showFlipCameraButton: true
-    };
+  constructor(private booksService: BooksService) {
+    
   }
 
   ngOnInit() {
-    this.barcodeScanner
-      .scan()
-      .then(barcodeData => {
-        this.scannedData =  JSON.stringify(barcodeData);
-        alert("Barcode data " + this.scannedData);
-        if(this.scannedData['cancelled']) {}
-      })
-      .catch(err => {
-        console.log("Error", err);
-      });
+    this.booksService.getAllFavoriteBooks(STORAGE_KEY).then((value) => {
+      value.forEach(result => {
+        this.results = result.items;
+      })      
+    });
   }
 
-
-  
-  
-
+  // Refresh the list if no value loaded
+  doRefresh(refresher?) {
+    this.booksService.getAllFavoriteBooks(STORAGE_KEY).then((value) => {
+      this.results = value;  
+      if (refresher) {
+          refresher.target.complete();
+      }
+    });
+  }
 
 }
