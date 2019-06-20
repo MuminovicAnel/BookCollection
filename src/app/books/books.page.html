@@ -13,7 +13,7 @@
 
 <ion-content>
 
-    <ion-searchbar #mainSearchbar debounce="50" [(ngModel)]="searchTerm" (ionChange)="searchChanged($event)" (ionChange)="presentLoadingWithOptions($event)"></ion-searchbar>
+    <ion-searchbar #mainSearchbar debounce="100" [(ngModel)]="searchTerm" (ionChange)="searchChanged($event)" (ionChange)="presentLoadingWithOptions($event)"></ion-searchbar>
     <ion-item>
       <ion-label>Select Searchtype</ion-label>
       <ion-select [(ngModel)]="type">

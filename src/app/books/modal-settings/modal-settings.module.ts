@@ -6,6 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { ModalSettingsPage } from './modal-settings.page';
+import { IonicAngularThemeSwitchSelectModule } from 'ionic-angular-theme-switch';
 
 const routes: Routes = [
   {
@@ -19,7 +20,8 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    IonicAngularThemeSwitchSelectModule
   ],
   declarations: [ModalSettingsPage]
 })

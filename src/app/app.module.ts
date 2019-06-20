@@ -1,3 +1,4 @@
+import { IonicAngularThemeSwitchSelectModule } from 'ionic-angular-theme-switch';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -19,7 +20,7 @@ import { Network } from '@ionic-native/network/ngx';
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule, IonicStorageModule.forRoot(), CacheModule.forRoot({ keyPrefix: 'my-app-cache' }), ModalSettingsPageModule],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule, IonicStorageModule.forRoot(), CacheModule.forRoot({ keyPrefix: 'my-app-cache' }), ModalSettingsPageModule, IonicAngularThemeSwitchSelectModule.forRoot()],
   providers: [
     StatusBar,
     SplashScreen,

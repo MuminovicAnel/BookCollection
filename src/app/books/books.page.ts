@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { BooksService, SearchType, langRestrict } from '../api/books.service';
-import { LoadingController, IonSearchbar, ModalController, Platform } from '@ionic/angular';
-import { ViewChild } from '@angular/core';
+import { LoadingController, IonSearchbar, ModalController, Platform, Events} from '@ionic/angular';
+import { ViewChild, NgZone } from '@angular/core';
 import { Book } from '../model/book.interfaces';
 import { Storage } from '@ionic/storage';
 import { Network } from '@ionic-native/network/ngx';
@@ -28,25 +28,37 @@ export class BooksPage implements OnInit {
   private storedLang: string;
   private maxResults: number;
 
-  constructor(private booksService: BooksService, private loadingController: LoadingController, private storage: Storage, private network: Network, private modalCtrl: ModalController, private plt: Platform) { }
+  public events: Events;
+  private zone: NgZone;
+
+  constructor(private booksService: BooksService, 
+              private loadingController: LoadingController, 
+              private storage: Storage, 
+              private network: Network,
+              private modalCtrl: ModalController, 
+              private plt: Platform) 
+              { 
+              } 
 
   ngOnInit() {
     this.plt.ready().then(() => {
       this.loadData();
     });
-      
+    
   }
 
   async loadData () {
     this.storage.keys().then(item => {
       if(item.length !== 0 || item){
-        this.storage.get(storageLang).then((value) => {
+        console.log(this.storedLang)
+        this.booksService.getAllFavoriteBooks(storageLang).then((value) => {
           console.log(value)
           value.forEach(item => {
             this.storedLang = item.value;   
           });            
         });
-        this.storage.get(storageMaxResult).then((value) => {
+        this.booksService.getAllFavoriteBooks(storageMaxResult).then((value) => {
+          console.log(value)
           value.forEach(item => {
             this.maxResults = item.value;
           });                
@@ -68,7 +80,7 @@ export class BooksPage implements OnInit {
   async presentLoadingWithOptions() {
     const loading = await this.loadingController.create({
       spinner: null,
-      duration: 50,
+      duration: 100,
       message: 'Please wait...',
       translucent: true,
       cssClass: 'custom-class custom-loading'
