@@ -19,9 +19,11 @@ export class BooksScanPage implements OnInit {
 
   ngOnInit() {
     this.booksService.getAllFavoriteBooks(STORAGE_KEY).then((value) => {
-      value.forEach(result => {
-        this.results = result.items;
-      })      
+      if(value) {
+        value.forEach(result => {
+          this.results = result.items;
+        })    
+      }  
     });
   }
 

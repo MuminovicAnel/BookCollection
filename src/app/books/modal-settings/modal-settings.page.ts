@@ -176,7 +176,7 @@ export class ModalSettingsPage implements OnInit {
  
   closeModal() {
     this.modalController.dismiss([this.maxResult, this.lang]);
-    this.router.navigateByUrl('/');
+    this.router.navigateByUrl('/books');
   }
 
   // Picker 

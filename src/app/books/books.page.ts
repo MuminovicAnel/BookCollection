@@ -31,7 +31,7 @@ export class BooksPage implements OnInit {
   private lang = langRestrict;
   private storedLang: string;
   private maxResults: number;
-  private isbnResult$: Observable<Book[]>;
+  private isbnResult$: Book;
 
   private scannedData: {};
   private barcodeScannerOptions: BarcodeScannerOptions;
@@ -67,10 +67,10 @@ export class BooksPage implements OnInit {
         this.scannedData =  barcodeData;
         alert('livre ' + this.scannedData['text']);
         //if(validate(this.scannedData['text'])) {
-        this.booksService.getISBN(this.scannedData['text']).subscribe(async (book: Book)  => {
+        this.booksService.getISBN(this.scannedData['text']).subscribe(async (book: Book[])  => {
           console.log(book)
           if(book) {
-            this.booksService.favoriteBook(book, STORAGE_KEY).then(result => {
+            this.booksService.favoriteBook(book['items'], STORAGE_KEY).then(result => {
               console.log(result);
               this.isbnResult$ = result;
             });
@@ -164,6 +164,10 @@ export class BooksPage implements OnInit {
       componentProps: {
         lang: this.lang,
       }
+    });
+
+    modal.onDidDismiss().then(() => {
+      this.router.navigateByUrl('/');
     });
 
     return await modal.present();
