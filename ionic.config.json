@@ -1,0 +1,7 @@
+{
+  "name": "BookCollection",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

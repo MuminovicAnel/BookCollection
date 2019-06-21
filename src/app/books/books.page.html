@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Books Collection
+    </ion-title>
+    <ion-buttons slot="start">
+      <ion-button (click)="scanBarcode($event)" [disabled]="disabledScan">
+        <ion-icon slot="icon-only" name="qr-scanner" size="large"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="openModal($event)">
+        <ion-icon slot="icon-only" name="settings"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+    <ion-searchbar #mainSearchbar debounce="100" [(ngModel)]="searchTerm" (search)="searchChanged($event)" (search)="presentLoadingWithOptions($event)" [disabled]="disabledSearch"></ion-searchbar>
+    <ion-item>
+      <ion-label>Select Searchtype</ion-label>
+      <ion-select [(ngModel)]="type">
+        <ion-select-option value="">All</ion-select-option>
+        <ion-select-option value="intitle:">Title</ion-select-option>
+        <ion-select-option value="inauthor:">Author</ion-select-option>
+        <ion-select-option value="inpublisher:">Publisher</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-list>
+      <ion-item button *ngFor="let item of (results$ | async)?.items" [routerLink]="['/', 'books', item.id]" [disabled]="disabledList">
+        <ion-avatar slot="start">
+          <ion-img [src]="item.volumeInfo.imageLinks.smallThumbnail" *ngIf="item.volumeInfo.imageLinks; else image"></ion-img>
+          <ng-template #image>
+              <img src="../../assets/default/image.png">
+          </ng-template>
+        </ion-avatar>
+        
+        <ion-label text-wrap>
+          <h3>{{ item.volumeInfo.title}}</h3>
+          <p *ngIf="item.volumeInfo.authors; else author">{{ item.volumeInfo.authors }}</p>
+          <ng-template #author>
+            <p>No author information</p>
+          </ng-template>
+          
+          <p *ngIf="item.volumeInfo.publisher">{{ item.volumeInfo.publisher }}</p>            
+        </ion-label>         
+      </ion-item> 
+    </ion-list>
+    
+</ion-content>
