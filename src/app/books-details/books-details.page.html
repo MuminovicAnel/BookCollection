@@ -36,7 +36,7 @@
     </ion-card-header>
     <ion-card-content text-center>
 
-      <img [src]="book.volumeInfo.imageLinks.smallThumbnail" *ngIf="book.volumeInfo.imageLinks; else image" class="info-img">
+      <ion-img [src]="book.volumeInfo.imageLinks.smallThumbnail" *ngIf="book.volumeInfo.imageLinks; else image" class="info-img"></ion-img>
       <ng-template #image>
           <img src="../../assets/default/image.png">
       </ng-template>

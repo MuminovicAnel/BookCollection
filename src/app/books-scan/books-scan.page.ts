@@ -21,8 +21,8 @@ export class BooksScanPage implements OnInit {
     this.booksService.getAllFavoriteBooks(STORAGE_KEY).then((value) => {
       if(value) {
         value.forEach(result => {
-          this.results = result.items;
-        })    
+          this.results = result;
+        });    
       }  
     });
   }
@@ -30,7 +30,11 @@ export class BooksScanPage implements OnInit {
   // Refresh the list if no value loaded
   doRefresh(refresher?) {
     this.booksService.getAllFavoriteBooks(STORAGE_KEY).then((value) => {
-      this.results = value;  
+      if(value) {
+        value.forEach(result => {
+          this.results = result;
+        });    
+      }  
       if (refresher) {
           refresher.target.complete();
       }

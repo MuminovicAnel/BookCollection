@@ -10,7 +10,7 @@ import { BooksPage } from './books.page';
     IonicModule,
     CommonModule,
     FormsModule,
-    RouterModule.forChild([{ path: '', component: BooksPage }])
+    RouterModule.forChild([{ path: '', component: BooksPage }]),
   ],
   declarations: [BooksPage]
 })

@@ -23,9 +23,9 @@ export class BooksDetailsPage implements OnInit {
     // Get the ID that was passed with the URL
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
 
-    // Check if id exist in storage
+    // Check if title exist in storage
     this.booksService.getDetails(this.id).subscribe((book: Book[])=> {
-      this.booksService.isFavorite(book['id'], STORAGE_KEY).then(isFav => {
+      this.booksService.isFavorite(book['volumeInfo']['title'], STORAGE_KEY).then(isFav => {
         this.isFavorite = isFav;
       });
     });
@@ -34,7 +34,7 @@ export class BooksDetailsPage implements OnInit {
   // Function that store an item
   async favoriteBook() {
     this.booksService.getDetails(this.id).subscribe((book: Book[])=> {
-      this.booksService.favoriteBook(book, STORAGE_KEY).then(() => {
+      this.booksService.favoriteBook(book['volumeInfo'], STORAGE_KEY).then(() => {
         this.isFavorite = true;
       });
     });
@@ -47,7 +47,6 @@ export class BooksDetailsPage implements OnInit {
           icon: 'star',
           text: 'Added in your favorites !',
           handler: () => {
-            console.log('Favorite clicked');
             this.router.navigateByUrl('tabs/books-favorite');
           }
         }, {
@@ -65,7 +64,7 @@ export class BooksDetailsPage implements OnInit {
   // Function that unset an item from the storage
   async unFavoriteBook() {
     this.booksService.getDetails(this.id).subscribe((book: Book[])=> {
-      this.booksService.unfavoriteBook(book, STORAGE_KEY).then(() => {
+      this.booksService.unfavoriteBook(book['volumeInfo'], STORAGE_KEY).then(() => {
         this.isFavorite = false;
       });
     });

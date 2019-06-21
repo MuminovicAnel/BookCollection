@@ -7,7 +7,7 @@
 </ion-header>
 
 <ion-toolbar class="bar-assertive">
-  <ion-title class="">Swipe to refresh</ion-title>
+  <ion-title>Swipe to refresh</ion-title>
 </ion-toolbar>
 
 <ion-content>
@@ -33,11 +33,11 @@
         </ng-template>
         
         <p *ngIf="item.volumeInfo.publisher">{{ item.volumeInfo.publisher }}</p>            
-      </ion-label>
-      <ion-button expand="block" slot="end" (click)="openWebsite(item.accessInfo.webReaderLink)" *ngIf="item.accessInfo.webReaderLink">
-        <ion-icon name="open" slot="start"></ion-icon>
-        Details
-    </ion-button>         
-    </ion-item>  
+      </ion-label>        
+    </ion-item>
+    <ion-button (click)="openWebsite(item.volumeInfo.infoLink)">
+      Buy
+      <ion-icon slot="end" name="basket"></ion-icon>
+    </ion-button>  
   </ion-list>
 </ion-content>

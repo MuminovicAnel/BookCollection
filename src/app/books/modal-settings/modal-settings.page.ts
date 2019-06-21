@@ -116,11 +116,9 @@ export class ModalSettingsPage implements OnInit {
   }
  
   ngOnInit() {
-    console.table(this.navParams);
     this.languages = this.navParams.data.lang;
     this.storage.get(storageLang).then(value => {
       value.forEach(item => {
-        console.log(item)
         if(item) {
           this.storedLang = item['text'];
         }
@@ -128,7 +126,6 @@ export class ModalSettingsPage implements OnInit {
     });
     this.storage.get(storageMaxResult).then(value => {
       value.forEach(item => {
-        console.log(item)
         if(item) {
           this.number = item['value'];
         }
@@ -154,29 +151,28 @@ export class ModalSettingsPage implements OnInit {
   }
   
 
-  storeSettings() {
+  async storeSettings() {
+    event.preventDefault();
+    this.disabled = true;
+    console.log(this.disabled)
     this.languages.forEach(item => {
       if(item['value'] === this.lang) {
         let res: any = item
         this.lang = res;
       }
     });
-
-    this.disabled = true;
     // Set the language setting and overwrite previous value
     if(Object.keys(this.lang).length === 2) {
       this.booksService.storeUpdate(this.lang, storageLang)
     }
     if(this.maxResult) {
-      console.log(this.maxResult)
       this.booksService.storeUpdate(this.maxResult, storageMaxResult)
     }
     
   }
  
-  closeModal() {
+  async closeModal() {
     this.modalController.dismiss([this.maxResult, this.lang]);
-    this.router.navigateByUrl('/books');
   }
 
   // Picker 

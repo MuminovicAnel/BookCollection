@@ -120,10 +120,12 @@ export class BooksService {
   */
   isFavorite(bookId: Book, storageKey: string): Promise<any> {
     return this.getAllFavoriteBooks(storageKey).then(result => {
-      return result.some(response => 
-        response.id === bookId
-      );
-    });     
+      if (result) {
+        return result.some(response =>
+          response.title === bookId
+        );
+      }
+    });
   }
   
   /**
@@ -165,7 +167,7 @@ export class BooksService {
   * @param {string} storageKey to retrieve information
   * @returns storage set
   */
-  getAllFavoriteBooks(storageKey: string) {
+  getAllFavoriteBooks(storageKey: string): Observable<Book[]> {
     return this.storage.get(storageKey);
   }
 

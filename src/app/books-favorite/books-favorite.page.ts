@@ -30,5 +30,9 @@ export class BooksFavoritePage implements OnInit {
       }
     });
   }
+
+  openWebsite(url) {
+    window.open(url, '_system');
+  }
   
 }

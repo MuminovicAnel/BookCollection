@@ -6,7 +6,7 @@
   </ion-toolbar>
 </ion-header>
 <ion-toolbar class="bar-assertive">
-  <ion-title class="">Swipe to refresh</ion-title>
+  <ion-title>Swipe to refresh</ion-title>
 </ion-toolbar>
 
 <ion-content>
@@ -16,23 +16,27 @@
   </ion-refresher>
 
   <ion-list>
-    <ion-item button *ngFor="let item of results" [routerLink]="['/', 'books', item.id]">
+    <ion-item *ngFor="let item of results">
       <ion-avatar slot="start">
-        <img [src]="item.volumeInfo.imageLinks.smallThumbnail" *ngIf="item.volumeInfo.imageLinks; else image">
+        <ion-img [src]="item.imageLinks.smallThumbnail" *ngIf="item.imageLinks; else image"></ion-img>
         <ng-template #image>
             <img src="../../assets/default/image.png">
         </ng-template>
       </ion-avatar>
       
       <ion-label text-wrap>
-        <h3>{{ item.volumeInfo.title}}</h3>
-        <p *ngIf="item.volumeInfo.authors; else author">{{ item.volumeInfo.authors }}</p>
+        <h3>{{ item.title}}</h3>
+        <p *ngIf="item.authors; else author">{{ item.authors }}</p>
         <ng-template #author>
           <p>No author information</p>
         </ng-template>
         
-        <p *ngIf="item.volumeInfo.publisher">{{ item.volumeInfo.publisher }}</p>            
-      </ion-label>         
+        <p *ngIf="item.publisher">{{ item.publisher }}</p>            
+      </ion-label>
+      <ion-button (click)="openWebsite(item.infoLink)">
+        Buy
+        <ion-icon slot="end" name="basket"></ion-icon>
+      </ion-button>
     </ion-item>  
   </ion-list>
 </ion-content>
