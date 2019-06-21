@@ -70,7 +70,6 @@ export class BooksPage implements OnInit {
   check() {
       this.networkService.onNetworkChange().subscribe((status: ConnectionStatus) => {
         if (status == ConnectionStatus.Online) {
-          this.online();
           this.disabledScan = false;
           this.disabledSearch = false;
           this.disabledList = false;
@@ -83,16 +82,9 @@ export class BooksPage implements OnInit {
       });
     
   }
-  async online(){
-    const toast = await this.toastController.create({
-      message: `You are now connected`,
-      duration: 3000
-    })
-    toast.present();
-  }
   async offline() {
     const toast = await this.toastController.create({
-      message: `You are disconnected`,
+      message: `You are disconnected ! Please reconnect to access the app.`,
       duration: 3000
     })
     toast.present();

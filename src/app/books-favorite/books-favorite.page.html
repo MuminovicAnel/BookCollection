@@ -33,7 +33,7 @@
         
         <p *ngIf="item.publisher">{{ item.publisher }}</p>            
       </ion-label>
-      <ion-button (click)="openWebsite(item.infoLink)">
+      <ion-button (click)="openWebsite(item.infoLink)" *ngIf="item.infoLink">
         Buy
         <ion-icon slot="end" name="basket"></ion-icon>
       </ion-button>

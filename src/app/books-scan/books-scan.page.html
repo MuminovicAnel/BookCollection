@@ -35,7 +35,7 @@
         <p *ngIf="item.volumeInfo.publisher">{{ item.volumeInfo.publisher }}</p>            
       </ion-label>        
     </ion-item>
-    <ion-button (click)="openWebsite(item.volumeInfo.infoLink)">
+    <ion-button (click)="openWebsite(item.volumeInfo.infoLink)" *ngIf="item.volumeInfo.infoLink">
       Buy
       <ion-icon slot="end" name="basket"></ion-icon>
     </ion-button>  
