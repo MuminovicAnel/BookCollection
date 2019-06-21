@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { BooksService, SearchType, langRestrict } from '../api/books.service';
+import { NetworkService, ConnectionStatus } from '../services/network.service'
 import { LoadingController, IonSearchbar, ModalController, Platform, ToastController} from '@ionic/angular';
 import { ViewChild } from '@angular/core';
 import { Book } from '../model/book.interfaces';
@@ -24,17 +25,22 @@ const STORAGE_KEY = 'wishListBooks';
 export class BooksPage implements OnInit {
   @ViewChild('mainSearchbar') searchBar: IonSearchbar;
 
-  public myData = new BehaviorSubject([]);
   private results$: Observable<Book[]>;
   private searchTerm = '';
   private type: SearchType = SearchType.all;
   private lang = langRestrict;
-  private storedLang: string;
+  private storedLang: Observable<Book[]>;
   private maxResults: number;
   private isbnResult$: Book;
+  private disabledSearch = false;
+  private disabledScan = false;
+  private disabledList = false;
 
   private scannedData: {};
   private barcodeScannerOptions: BarcodeScannerOptions;
+
+  private connected: Subscription;
+  private disconnected: Subscription;
 
   constructor(private booksService: BooksService,
               private loadingController: LoadingController,
@@ -44,7 +50,8 @@ export class BooksPage implements OnInit {
               private plt: Platform,
               private barcodeScanner: BarcodeScanner,
               private toastController: ToastController,
-              private router: Router)
+              private router: Router,
+              private networkService: NetworkService)
               {
               // Options
               this.barcodeScannerOptions = {
@@ -53,11 +60,42 @@ export class BooksPage implements OnInit {
               };
               }
 
-  ngOnInit() {
+  ngOnInit() {   
     this.plt.ready().then(() => {
+      this.check();
       this.loadData();
     });
+  }
 
+  check() {
+      this.networkService.onNetworkChange().subscribe((status: ConnectionStatus) => {
+        if (status == ConnectionStatus.Online) {
+          this.online();
+          this.disabledScan = false;
+          this.disabledSearch = false;
+          this.disabledList = false;
+        } else {
+          this.offline();
+          this.disabledSearch = true;
+          this.disabledScan = true;
+          this.disabledList = true;
+        }
+      });
+    
+  }
+  async online(){
+    const toast = await this.toastController.create({
+      message: `You are now connected`,
+      duration: 3000
+    })
+    toast.present();
+  }
+  async offline() {
+    const toast = await this.toastController.create({
+      message: `You are disconnected`,
+      duration: 3000
+    })
+    toast.present();
   }
 
   async scanBarcode() {
@@ -65,13 +103,10 @@ export class BooksPage implements OnInit {
       .scan()
       .then(barcodeData => {
         this.scannedData =  barcodeData;
-        alert('livre ' + this.scannedData['text']);
-        //if(validate(this.scannedData['text'])) {
+        if(validate(this.scannedData['text'])) {
         this.booksService.getISBN(this.scannedData['text']).subscribe(async (book: Book[])  => {
-          console.log(book)
           if(book) {
             this.booksService.favoriteBook(book['items'], STORAGE_KEY).then(result => {
-              console.log(result);
               this.isbnResult$ = result;
             });
             const toast = await this.toastController.create({
@@ -83,7 +118,6 @@ export class BooksPage implements OnInit {
                   icon: 'star',
                   text: 'Added in your wishlist !',
                   handler: () => {
-                    console.log('Favorite clicked');
                     this.router.navigateByUrl('tabs/books-scan');
                   }
                 }, {
@@ -100,9 +134,9 @@ export class BooksPage implements OnInit {
             alert("Nous n'avons trouvé aucun livre correspondant à cet ISBN.");
           }
         });
-       /*  } else {
+         } else {
           alert("Ce n'est pas un ISBN, veuillez fournir un ISBN barcode.");
-        } */
+        } 
       })
       .catch(err => {
         console.log('Error', err);
@@ -112,17 +146,13 @@ export class BooksPage implements OnInit {
 
   async loadData() {
     this.storage.keys().then(item => {
-      console.log(item)
       if (item.length != 0) {
-        console.log(this.storedLang);
-        this.booksService.getAllFavoriteBooks(storageLang).then((value) => {
-          console.log(value);
+        this.booksService.getAllFavoriteBooks(storageLang).then(value => {
           value.forEach(item => {
-            this.storedLang = item.value;
+            this.storedLang = item['value'];
           });
         });
         this.booksService.getAllFavoriteBooks(storageMaxResult).then((value) => {
-          console.log(value);
           value.forEach(item => {
             this.maxResults = item.value;
           });
@@ -134,10 +164,9 @@ export class BooksPage implements OnInit {
   }
 
 
-  async searchChanged() {
+  searchChanged() {
     // Call our service function which returns an Observable
     this.results$ = this.booksService.searchData(this.searchTerm, this.type, this.storedLang, this.maxResults);
-    return await this.results$;
   }
 
   // Loading component
@@ -150,13 +179,16 @@ export class BooksPage implements OnInit {
       cssClass: 'custom-class custom-loading'
     });
 
-    /* loading.onDidDismiss().then(() => {
-      this.searchBar.setFocus();
-    }); */
-
     return await loading.present();
 
   }
+   async afterReload() {
+    const toast = await this.toastController.create({
+      message: 'Your settings have been saved. Refresh...',
+      duration: 2000
+    });
+    toast.present();
+   }
 
   async openModal() {
     const modal = await this.modalCtrl.create({
@@ -167,7 +199,8 @@ export class BooksPage implements OnInit {
     });
 
     modal.onDidDismiss().then(() => {
-      this.router.navigateByUrl('/');
+      this.afterReload();
+      setTimeout(function() { window.location.replace('/'); }, 3000);
     });
 
     return await modal.present();

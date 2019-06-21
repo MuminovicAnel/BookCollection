@@ -4,7 +4,7 @@
       Books Collection
     </ion-title>
     <ion-buttons slot="start">
-      <ion-button (click)="scanBarcode($event)">
+      <ion-button (click)="scanBarcode($event)" [disabled]="disabledScan">
         <ion-icon slot="icon-only" name="qr-scanner" size="large"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -18,7 +18,7 @@
 
 <ion-content>
 
-    <ion-searchbar #mainSearchbar debounce="100" [(ngModel)]="searchTerm" (search)="searchChanged($event)" (search)="presentLoadingWithOptions($event)"></ion-searchbar>
+    <ion-searchbar #mainSearchbar debounce="100" [(ngModel)]="searchTerm" (search)="searchChanged($event)" (search)="presentLoadingWithOptions($event)" [disabled]="disabledSearch"></ion-searchbar>
     <ion-item>
       <ion-label>Select Searchtype</ion-label>
       <ion-select [(ngModel)]="type">
@@ -28,19 +28,11 @@
         <ion-select-option value="inpublisher:">Publisher</ion-select-option>
       </ion-select>
     </ion-item>
-    <div *ngIf="isbnResult">
-      <p>
-        Scanned Code Text : <b>{{ scannedData["text"] }}</b>
-      </p>
-      <p>
-        Scanned Code Format : <b>{{ scannedData["format"] }}</b>
-      </p>
-    </div>
 
     <ion-list>
-      <ion-item button *ngFor="let item of (results$ | async)?.items" [routerLink]="['/', 'books', item.id]">
+      <ion-item button *ngFor="let item of (results$ | async)?.items" [routerLink]="['/', 'books', item.id]" [disabled]="disabledList">
         <ion-avatar slot="start">
-          <img [src]="item.volumeInfo.imageLinks.smallThumbnail" *ngIf="item.volumeInfo.imageLinks; else image">
+          <ion-img [src]="item.volumeInfo.imageLinks.smallThumbnail" *ngIf="item.volumeInfo.imageLinks; else image"></ion-img>
           <ng-template #image>
               <img src="../../assets/default/image.png">
           </ng-template>
