@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
 import { BooksService, SearchType, langRestrict } from '../api/books.service';
 import { NetworkService, ConnectionStatus } from '../services/network.service'
 import { LoadingController, IonSearchbar, ModalController, Platform, ToastController} from '@ionic/angular';
 import { ViewChild } from '@angular/core';
 import { Book } from '../model/book.interfaces';
 import { Storage } from '@ionic/storage';
-import { Network } from '@ionic-native/network/ngx';
 import { ModalSettingsPage } from './modal-settings/modal-settings.page';
 import { BarcodeScanner, BarcodeScannerOptions } from '@ionic-native/barcode-scanner/ngx';
 import { Router } from '@angular/router';
@@ -25,27 +23,25 @@ const STORAGE_KEY = 'wishListBooks';
 export class BooksPage implements OnInit {
   @ViewChild('mainSearchbar') searchBar: IonSearchbar;
 
-  private results$: Observable<Book[]>;
+  private results$: Book[];
   private searchTerm = '';
   private type: SearchType = SearchType.all;
   private lang = langRestrict;
-  private storedLang: Observable<Book[]>;
+  private storedLang: string;
   private maxResults: number;
   private isbnResult$: Book;
   private disabledSearch = false;
   private disabledScan = false;
   private disabledList = false;
+  private error: Book[];
 
   private scannedData: {};
   private barcodeScannerOptions: BarcodeScannerOptions;
 
-  private connected: Subscription;
-  private disconnected: Subscription;
 
   constructor(private booksService: BooksService,
               private loadingController: LoadingController,
               private storage: Storage,
-              private network: Network,
               private modalCtrl: ModalController,
               private plt: Platform,
               private barcodeScanner: BarcodeScanner,
@@ -69,28 +65,20 @@ export class BooksPage implements OnInit {
 
   check() {
       this.networkService.onNetworkChange().subscribe((status: ConnectionStatus) => {
-        if (status == ConnectionStatus.Online) {
+        if (status === ConnectionStatus.Online) {
           this.disabledScan = false;
           this.disabledSearch = false;
           this.disabledList = false;
         } else {
-          this.offline();
           this.disabledSearch = true;
           this.disabledScan = true;
           this.disabledList = true;
         }
       });
-    
-  }
-  async offline() {
-    const toast = await this.toastController.create({
-      message: `You are disconnected ! Please reconnect to access the app.`,
-      duration: 3000
-    })
-    toast.present();
-  }
+    }
 
   async scanBarcode() {
+    this.check();
     this.barcodeScanner
       .scan()
       .then(barcodeData => {
@@ -123,11 +111,11 @@ export class BooksPage implements OnInit {
             });
             toast.present();
           } else {
-            alert("Nous n'avons trouvé aucun livre correspondant à cet ISBN.");
+            alert('Nous n\'avons trouvé aucun livre correspondant à cet ISBN.');
           }
         });
          } else {
-          alert("Ce n'est pas un ISBN, veuillez fournir un ISBN barcode.");
+          alert('Ce n\'est pas un ISBN, veuillez fournir un ISBN barcode.');
         } 
       })
       .catch(err => {
@@ -141,7 +129,7 @@ export class BooksPage implements OnInit {
       if (item.length != 0) {
         this.booksService.getAllFavoriteBooks(storageLang).then(value => {
           value.forEach(item => {
-            this.storedLang = item['value'];
+            this.storedLang = item.value;
           });
         });
         this.booksService.getAllFavoriteBooks(storageMaxResult).then((value) => {
@@ -158,7 +146,26 @@ export class BooksPage implements OnInit {
 
   searchChanged() {
     // Call our service function which returns an Observable
-    this.results$ = this.booksService.searchData(this.searchTerm, this.type, this.storedLang, this.maxResults);
+    this.booksService.searchData(this.searchTerm, this.type, this.storedLang, this.maxResults).subscribe((result: Book[]) => {
+      this.results$ = result;
+    }, error => {
+      this.error = error;
+      console.log(error)
+      if(error.status === 400) {
+        this.handleErrorSearch(error.error.error.message);
+      }
+      else if (error.status === 0) {
+        this.check();
+      }
+    });
+  }
+
+  async handleErrorSearch(error) {
+    const toast = await this.toastController.create({
+      message: `Error : ${error}`,
+      duration: 4000
+    })
+    toast.present();
   }
 
   // Loading component

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders} from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 import { retry, catchError} from 'rxjs/operators';
 import { Book } from '../model/book.interfaces';
@@ -15,32 +15,36 @@ export enum SearchType {
 const langRestrict = [
   {
     text: 'English',
-    value: "en"
+    value: 'en'
   },
   {
     text: 'French',
-    value: "fr"
+    value: 'fr'
   },
   {
-    text: "Italian",
-    value: "it"
+    text: 'Italian',
+    value: 'it'
   },
   {
-    text: "German",
-    value: "de"
+    text: 'German',
+    value: 'de'
   },
 ];
 
 export {langRestrict};
-
 
 @Injectable({
   providedIn: 'root'
 })
 export class BooksService {
 
+  private headers = new HttpHeaders(
+    {'Content-Type': 'application/json',
+    'Accept': 'image/jpeg'}
+    );
+
   httpOptions = {
-    //headers: new HttpHeaders({'Content-Type': 'application/json'})
+    headers: this.headers
   };
 
   private url = 'https://www.googleapis.com/books/v1/volumes';
@@ -51,21 +55,7 @@ export class BooksService {
    * Constructor of the Service with Dependency Injection
    * @param http The standard Angular HttpClient to make requests
    */
-  constructor(private http: HttpClient, private storage: Storage) { }
-
-  private handleError<T> (operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-   
-      // TODO: send the error to remote logging infrastructure
-      console.error(error); // log to console instead
-   
-      // TODO: better job of transforming error for user consumption
-      console.log(`${operation} failed: ${error.message}`);
-   
-      // Let the app keep running by returning an empty result.
-      return of(error);
-    };
-  }
+constructor(private http: HttpClient, private storage: Storage) { }
 
 
 
@@ -78,12 +68,13 @@ export class BooksService {
   * @param {langRestrict} string language
   * @returns Observable with the search results
   */
-  searchData(title: string, type: SearchType, langRestrict: string, maxResult: number) : Observable<Book[]> {
-    let url = `${this.url}?q=${type}${encodeURI(title)}&langRestrict=${langRestrict}&maxResults=${maxResult}&printType=all&key=${this.apiKey}`;
-    return this.http.get<Book[]>(url, this.httpOptions).pipe(
+searchData(title: string, type: SearchType, langRestrict: string, maxResult: number) : Observable<Book[]> {
+  console.log(this.httpOptions)
+  let url = `${this.url}?q=${type}${encodeURI(title)}&langRestrict=${langRestrict}&maxResults=${maxResult}&printType=all&key=${this.apiKey}`;
+  return this.http.get<Book[]>(url, this.httpOptions).pipe(
       retry(3),
-      catchError(this.handleError<Book[]>('searchData', [])
-   ));
+      catchError(error => throwError(error))
+   );
   }
 
   /**
@@ -92,11 +83,11 @@ export class BooksService {
   * @param {string} id ID to retrieve information
   * @returns Observable with detailed information
   */
-  getDetails(id) : Observable<Book[]> {
+getDetails(id) : Observable<Book[]> {
     return this.http.get<Book[]>(`${this.url}/${id}?key=${this.apiKey}`, this.httpOptions).pipe(
       retry(3),
-      catchError(this.handleError<Book[]>('getDetails', [])
-   ));
+      catchError(error => throwError(error))
+   );
   }
 
   /**
@@ -105,11 +96,11 @@ export class BooksService {
   * @param {string} isbn ID to retrieve information
   * @returns Observable with detailed information
   */
- getISBN(isbn: string) : Observable<Book[]> {
+getISBN(isbn: string) : Observable<Book[]> {
     return this.http.get<Book[]>(`${this.url}?q=isbn:${isbn}&key=${this.apiKey}`, this.httpOptions).pipe(
       retry(3),
-      catchError(this.handleError<Book[]>('getISBN', [])
-   ));
+      catchError(error => throwError(error))
+   );
   }
 
   /**
@@ -118,7 +109,7 @@ export class BooksService {
   * @param {string} bookId ID to retrieve information
   * @returns result
   */
-  isFavorite(bookId: Book, storageKey: string): Promise<any> {
+isFavorite(bookId: Book, storageKey: string): Promise<any> {
     return this.getAllFavoriteBooks(storageKey).then(result => {
       if (result) {
         return result.some(response =>
@@ -134,7 +125,7 @@ export class BooksService {
   * @param {string} bookId ID to retrieve information
   * @returns the storage set result else the id of the book
   */
-  favoriteBook(bookId: Book, storageKey: string): Promise<Book> {
+favoriteBook(bookId: Book, storageKey: string): Promise<Book> {
     return this.getAllFavoriteBooks(storageKey).then((result: Book[]) => {
       if (result) {
         result.push(bookId);
@@ -151,7 +142,7 @@ export class BooksService {
   * @param {string} bookId ID to retrieve information
   * @returns the storage set result
   */
-  unfavoriteBook(bookId: Book, storageKey: string): Promise<Book> {
+unfavoriteBook(bookId: Book, storageKey: string): Promise<Book> {
     return this.getAllFavoriteBooks(storageKey).then((result: Book[]) => {
       if (result) {
         var index = result.indexOf(bookId);
@@ -167,7 +158,7 @@ export class BooksService {
   * @param {string} storageKey to retrieve information
   * @returns storage set
   */
-  getAllFavoriteBooks(storageKey: string): Observable<Book[]> {
+getAllFavoriteBooks(storageKey: string) {
     return this.storage.get(storageKey);
   }
 
@@ -179,7 +170,7 @@ export class BooksService {
   * @param {string} storageKey contains the key
   * @returns storage set
   */
-  storeUpdate(value: any, storageKey: string): Promise<any> {
+storeUpdate(value: any, storageKey: string): Promise<any> {
     return this.getAllFavoriteBooks(storageKey).then(result => {
       if(result && result.length === 0) {
         result.forEach(item => {
