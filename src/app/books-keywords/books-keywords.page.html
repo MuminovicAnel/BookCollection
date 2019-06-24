@@ -12,10 +12,30 @@
     </ion-button>
   </ion-item>
     <ion-row wrap>
-      <ion-col offset="5">
-        <ion-button (click)="listBooks()" size="small" color="light">
-          <ion-badge color="light" *ngFor="let item of results">{{item}}</ion-badge>
+      <ion-col>
+        <ion-button (click)="listBooks(item.text)" size="small" color="light" *ngFor="let item of results" ngDefaultControl>
+          {{item.text}}
         </ion-button>
       </ion-col>
     </ion-row>
+    <ion-list>
+        <ion-item button *ngFor="let item of listBooksResults$?.items" [routerLink]="['/', 'books', item.id]" [disabled]="disabledList">
+          <ion-avatar slot="start">
+            <ion-img [src]="item.volumeInfo.imageLinks.smallThumbnail" *ngIf="item.volumeInfo.imageLinks; else image"></ion-img>
+            <ng-template #image>
+                <img src="../../assets/default/image.png">
+            </ng-template>
+          </ion-avatar>
+          
+          <ion-label text-wrap>
+            <h3>{{ item.volumeInfo.title}}</h3>
+            <p *ngIf="item.volumeInfo.authors; else author">{{ item.volumeInfo.authors }}</p>
+            <ng-template #author>
+              <p>No author information</p>
+            </ng-template>
+            
+            <p *ngIf="item.volumeInfo.publisher">{{ item.volumeInfo.publisher }}</p>            
+          </ion-label>         
+        </ion-item> 
+      </ion-list>
 </ion-content>
