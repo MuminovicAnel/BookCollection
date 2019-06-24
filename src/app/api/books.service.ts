@@ -9,7 +9,8 @@ export enum SearchType {
   all = '',
   title = 'intitle:',
   author = 'inauthor:',
-  publisher = 'inpublisher:'
+  publisher = 'inpublisher:',
+  subject = 'subject:'
 }
 // ISO 639-1 codes
 const langRestrict = [
@@ -98,6 +99,13 @@ getDetails(id) : Observable<Book[]> {
   */
 getISBN(isbn: string) : Observable<Book[]> {
     return this.http.get<Book[]>(`${this.url}?q=isbn:${isbn}&key=${this.apiKey}`, this.httpOptions).pipe(
+      retry(3),
+      catchError(error => throwError(error))
+   );
+  }
+
+  getCategory(keyword: string, type: SearchType) : Observable<Book[]> {
+    return this.http.get<Book[]>(`${this.url}?q=${type}${keyword}&key=${this.apiKey}`, this.httpOptions).pipe(
       retry(3),
       catchError(error => throwError(error))
    );

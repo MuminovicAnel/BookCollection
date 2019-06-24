@@ -5,5 +5,17 @@
 </ion-header>
 
 <ion-content>
-
+  <ion-item>
+    <ion-input type="text" placeholder="Enter a category keyword" [(ngModel)]="keyword"></ion-input>
+    <ion-button (click)="addKeyword()" expand="full">
+      Add
+    </ion-button>
+  </ion-item>
+    <ion-row wrap>
+      <ion-col offset="5">
+        <ion-button (click)="listBooks()" size="small" color="light">
+          <ion-badge color="light" *ngFor="let item of results">{{item}}</ion-badge>
+        </ion-button>
+      </ion-col>
+    </ion-row>
 </ion-content>
