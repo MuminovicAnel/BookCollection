@@ -35,6 +35,15 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'books-keywords',
+        children: [
+          {
+            path: '',
+            loadChildren: '../books-keywords/books-keywords.module#BooksKeywordsPageModule'
+          }
+        ]
+      },
+      {
         path: '',
         redirectTo: '/tabs/books',
         pathMatch: 'full'

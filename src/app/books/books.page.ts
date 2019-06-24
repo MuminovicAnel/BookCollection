@@ -83,7 +83,7 @@ export class BooksPage implements OnInit {
       .scan()
       .then(barcodeData => {
         this.scannedData =  barcodeData;
-        if(validate(this.scannedData['text'])) {
+        //if(validate(this.scannedData['text'])) {
         this.booksService.getISBN(this.scannedData['text']).subscribe(async (book: Book[])  => {
           if(book) {
             this.booksService.favoriteBook(book['items'], STORAGE_KEY).then(result => {
@@ -114,9 +114,9 @@ export class BooksPage implements OnInit {
             alert('Nous n\'avons trouvé aucun livre correspondant à cet ISBN.');
           }
         });
-         } else {
-          alert('Ce n\'est pas un ISBN, veuillez fournir un ISBN barcode.');
-        } 
+        // } else {
+        //  alert('Ce n\'est pas un ISBN, veuillez fournir un ISBN barcode.');
+        //} 
       })
       .catch(err => {
         console.log('Error', err);
