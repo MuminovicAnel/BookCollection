@@ -7,6 +7,8 @@ import { IonicModule } from '@ionic/angular';
 
 import { BooksKeywordsPage } from './books-keywords.page';
 
+import { LongPressModule } from 'ionic-long-press';
+
 const routes: Routes = [
   {
     path: '',
@@ -19,7 +21,8 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    LongPressModule
   ],
   declarations: [BooksKeywordsPage]
 })

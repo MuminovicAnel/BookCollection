@@ -105,7 +105,7 @@ getISBN(isbn: string) : Observable<Book[]> {
   }
 
   getCategory(keyword: string, type: SearchType) : Observable<Book[]> {
-    return this.http.get<Book[]>(`${this.url}?q=${type}${keyword}&key=${this.apiKey}`, this.httpOptions).pipe(
+    return this.http.get<Book[]>(`${this.url}?q=${type}${keyword}&maxResults=40&key=${this.apiKey}`, this.httpOptions).pipe(
       retry(3),
       catchError(error => throwError(error))
    );

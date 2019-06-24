@@ -1,10 +1,24 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>books-keywords</ion-title>
-  </ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button (click)="deleteKeyword()" *ngIf="disabledTrash == false">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="start">
+        <ion-button (click)="editKeyword()" *ngIf="disabledCreate == false">
+            <ion-icon slot="icon-only" name="create"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+  </ion-toolbar>    
 </ion-header>
 
 <ion-content>
+    <ion-refresher class="refresh-" spinner="android" (ionRefresh)="doRefresh($event)">
+        <ion-refresher-content>
+        </ion-refresher-content>
+      </ion-refresher>
   <ion-item>
     <ion-input type="text" placeholder="Enter a category keyword" [(ngModel)]="keyword"></ion-input>
     <ion-button (click)="addKeyword()" expand="full">
@@ -13,7 +27,7 @@
   </ion-item>
     <ion-row wrap>
       <ion-col>
-        <ion-button (click)="listBooks(item.text)" size="small" color="light" *ngFor="let item of results" ngDefaultControl>
+        <ion-button ion-long-press (click)="listBooks(item.text)" [interval]="800" (onPressing)="showDelete(item.text)" size="small" color="light" *ngFor="let item of results" ngDefaultControl>
           {{item.text}}
         </ion-button>
       </ion-col>

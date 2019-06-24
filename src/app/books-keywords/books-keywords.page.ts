@@ -17,6 +17,10 @@ export class BooksKeywordsPage implements OnInit {
   private type: SearchType = SearchType.subject;
   private listBooksKeywords: string;
   private listBooksResults$: Book[];
+  private disabledTrash = true;
+  private disabledCreate = true;
+  private deleteValue: string;
+  private editValue: string;
 
   constructor(private booksService: BooksService, private storage: Storage, private toastController: ToastController) { }
 
@@ -25,6 +29,47 @@ export class BooksKeywordsPage implements OnInit {
       if(value) {
         this.results = value;   
       }  
+    });
+  }
+
+  showDelete(listBooksKeywords) {
+    this.disabledTrash = false;
+    this.disabledCreate = false;
+    this.deleteValue = listBooksKeywords;
+    this.editValue = listBooksKeywords;
+  }
+
+  deleteKeyword() {
+    this.booksService.getAllFavoriteBooks(STORAGE_KEY).then(result => {
+      if (result) {
+        var index = result.indexOf(this.deleteValue);
+        result.splice(index, 1);
+        this.delete();
+        return this.storage.set(STORAGE_KEY, result);
+      }
+    });
+  }
+
+  editKeyword() {
+    let item = [];
+    item.push({
+      text: this.editValue, value: this.editValue
+    })
+    console.log(item)
+    //this.booksService.storeUpdate(item, STORAGE_KEY);
+  }
+
+  // Refresh the list if no value loaded
+  doRefresh(refresher?) {
+    this.booksService.getAllFavoriteBooks(STORAGE_KEY).then((value) => {
+      if(value) {
+        value.forEach(result => {
+          this.results = result;
+        });    
+      }  
+      if (refresher) {
+          refresher.target.complete();
+      }
     });
   }
 
@@ -43,12 +88,12 @@ export class BooksKeywordsPage implements OnInit {
           value.push({
             text: this.keyword, value: this.keyword
           })
-          this.storage.set(STORAGE_KEY, value);
           this.inputAdd();
+          return this.storage.set(STORAGE_KEY, value);
         }
         });        
       } else {
-        this.storage.set(STORAGE_KEY, item);
+        return this.storage.set(STORAGE_KEY, item);
       }
     })
     
@@ -83,6 +128,14 @@ export class BooksKeywordsPage implements OnInit {
    async noCategory() {
     const toast = await this.toastController.create({
       message: 'Sorry. No books for this category !',
+      duration: 3000
+    });
+    toast.present();
+   }
+
+   async delete() {
+    const toast = await this.toastController.create({
+      message: `Keyword ${this.deleteValue} deleted !`,
       duration: 3000
     });
     toast.present();
